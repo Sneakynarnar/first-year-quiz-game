@@ -8,7 +8,7 @@ View Contributors[^1]
 
 ## Installation & Setup
 
-- Insert
+Insert
 
 ## Dependancies 
 
