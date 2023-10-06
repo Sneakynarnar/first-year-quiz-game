@@ -1,0 +1,19 @@
+{
+  "name": "first-year-quiz-game",
+  "version": "1.0.0",
+  "description": "A web-application to support those who are currently studying their 1st year at the University of Portsmouth",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sneakynarnar/first-year-quiz-game.git"
+  },
+  "author": "Nana Adjei, Cameron Shearer, Rokas Garaimas, Reece Chawda, Archie Mcinroy & Henry Dean",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sneakynarnar/first-year-quiz-game/issues"
+  },
+  "homepage": "https://github.com/Sneakynarnar/first-year-quiz-game#readme"
+}
