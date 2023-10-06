@@ -12,6 +12,8 @@ Insert
 
 ## Dependancies 
 
+`npm i`
+
 + node.js
 + django
 
