@@ -1,5 +1,7 @@
 # Software Engineering Theory and Practice 
 
+View Contributors[^1]
+
 # Documentation
 
 [Link](192.168.1.1)
