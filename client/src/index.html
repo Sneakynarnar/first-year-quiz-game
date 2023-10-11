@@ -1,45 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduTech Hub</title>
-    <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #1f1f1f;
+      color: #fff;
+    }
+
+    header {
+      background-color: #333;
+      padding: 20px;
+      text-align: center;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+
+    .banner-button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      background-color: #0073e6;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      border-radius: 15px;
+      position: relative;
+    }
+
+    .dropdown-container {
+      display: inline-block;
+      position: relative;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      background-color: #000;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    .dropdown-button {
+      background-color: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 5px;
+      display: block;
+      transition: background-color 0.2s;
+    }
+
+    .banner-button:hover {
+      background-color: #00a672;
+      transform: scale(1.05);
+    }
+
+    .banner-button:hover .dropdown {
+      display: block;
+    }
+
+    .dropdown-button:hover {
+      background-color: #00a672;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    h2 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to EduTech Hub</h1>
-        <p>Your Gateway to Learning</p>
-    </header>
+  <header>
+    <div class="dropdown-container">
+      <div class="banner-button">
+        Login to Google
+        <div class="dropdown">
+          <button class="dropdown-button" id="register1">Register</button>
+          <button class="dropdown-button" id="login1">Login</button>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-container">
+      <div class="banner-button">
+        Login to GitHub
+        <div class="dropdown">
+          <button class="dropdown-button" id="register2">Register</button>
+          <button class="dropdown-button" id="login2">Login</button>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown-container">
+      <div class="banner-button">
+        Login to Discord
+        <div class="dropdown">
+          <button class="dropdown-button" id="register3">Register</button>
+          <button class="dropdown-button" id="login3">Login</button>
+        </div>
+      </div>
+    </div>
+  </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h2>Unlock Your Potential</h2>
-            <p>Explore the world of coding with our interactive courses.</p>
-            <a href="#" class="btn-start">Get Started</a>
-        </div>
-    </section>
+  <div class="container">
+    <h2>Education Mania!</h2>
+  </div>
 
-    <section class="features">
-        <div class="feature">
-            <img src="icon1.png" alt="HTML Icon">
-            <h3>HTML</h3>
-            <p>Build the foundation of web development.</p>
-        </div>
-        <div class="feature">
-            <img src="icon2.png" alt="CSS Icon">
-            <h3>CSS</h3>
-            <p>Style your web creations with CSS magic.</p>
-        </div>
-        <div class="feature">
-            <img src="icon3.png" alt="JavaScript Icon">
-            <h3>JavaScript</h3>
-            <p>Bring interactivity and life to your web projects.</p>
-        </div>
-    </section>
+  <script>
+    // Add JavaScript to make the "Register" and "Login" buttons interactable
+    const registerButtons = document.querySelectorAll('.dropdown-button');
 
-    <footer>
-        <p>&copy; 2023 EduTech Hub</p>
-    </footer>
+    registerButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        alert(`You clicked "${button.innerHTML}"`);
+        // Add JavaScript code here to redirect the pages to the login or register
+      });
+    });
+  </script>
 </body>
 </html>
