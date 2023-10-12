@@ -11,6 +11,8 @@ View Contributors[^1]
 ## Dependancies 
 
 `npm i`
+
+
 `npx tailwindcss -i ./client/src/login/input.css -o ./client/src/login/output.css --watch`
 
 + node.js
