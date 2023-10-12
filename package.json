@@ -4,7 +4,8 @@
   "description": "A web-application to support those who are currently studying their 1st year at the University of Portsmouth",
   "main": " ",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tailwindcss -i ./client/src/login/input.css -o ./client/src/login/output.css --watch"
   },
   "repository": {
     "type": "git",
