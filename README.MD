@@ -8,7 +8,7 @@ View Contributors[^1]
 
 ## Installation & Setup
 
-## Dependancies 
+## Dependencies
 
 `npm i`
 `npm run dev`
