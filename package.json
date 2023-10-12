@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Sneakynarnar/first-year-quiz-game/issues"
   },
-  "homepage": "https://github.com/Sneakynarnar/first-year-quiz-game#readme"
+  "homepage": "https://github.com/Sneakynarnar/first-year-quiz-game#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  }
 }
