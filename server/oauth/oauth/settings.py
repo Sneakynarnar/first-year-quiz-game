@@ -42,9 +42,18 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.discord',
-    'allauth.socialaccount.providers.github',
+    'compressor',
+    # 'allauth.socialaccount.providers.discord',
+    # 'allauth.socialaccount.providers.github',
 ]
+
+
+COMPRESS_ROOT = BASE_DIR / 'static'
+  
+COMPRESS_ENABLED = True
+  
+STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +71,7 @@ ROOT_URLCONF = 'oauth.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -138,3 +147,17 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 1 
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = 'home'
