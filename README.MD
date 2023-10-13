@@ -8,12 +8,10 @@ View Contributors[^1]
 
 ## Installation & Setup
 
-## Dependancies 
+## Dependencies
 
 `npm i`
-
-
-`npx tailwindcss -i ./client/src/login/input.css -o ./client/src/login/output.css --watch`
+`npm run dev`
 
 + node.js
 + django
