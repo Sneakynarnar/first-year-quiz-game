@@ -4,5 +4,6 @@ def index(request):
     return render(request, 'index.html')
 
 def home(request):
-    return render(request, 'daschboard/home.html')
+    return render(request, 'dashboard/home.html')
+
 
