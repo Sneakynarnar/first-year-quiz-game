@@ -5,7 +5,7 @@
   "main": " ",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tailwindcss -i ./client/src/login/input.css -o ./client/src/login/output.css --watch"
+    "build-css": "npx tailwindcss -i ./server/oauth/static/src/styles/input.css -o ./server/oauth/static/src/styles/output.css --watch"
   },
   "repository": {
     "type": "git",

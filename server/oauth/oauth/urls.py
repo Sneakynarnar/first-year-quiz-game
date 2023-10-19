@@ -1,5 +1,5 @@
 """
-URL configuration for mqa project.
+URL configuration for oauth project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -16,8 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
+from .views import index
 
 urlpatterns = [
-    path('login/', include('login.urls')), # login route
-    path("admin/", admin.site.urls), # admin route
+    path('admin/', admin.site.urls),
+    path('home/', TemplateView.as_view(template_name='dashboard/home.html'), name='home'),
+    path('accounts/', include('allauth.urls')),
+    path('', index, name='index')
 ]
