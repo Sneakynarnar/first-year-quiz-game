@@ -6,7 +6,7 @@ View Contributors[^1]
 
 We need to fill in requirements.txt for Python Pip
 
-Run `npm run build-css` to generate the TailWindCSS file, but make sure your directory is quiz/website, then run the command.
+Run `npm run build-css` to generate the TailWindCSS file, but make sure your directory is quiz then run the command.
 
 [Link](192.168.1.1)
 
