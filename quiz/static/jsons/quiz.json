@@ -1,25 +1,52 @@
 {
-    "quiz-title": "General Knowledge",
-    "questions": [
-        {
-            "question_title": "What is the meaning of life?",
-            "options": [
-                "N/A",
-                "Nothing",
-                "Everything!",
-                "I don't know!"
-            ],
-            "correct_ans": "Eveyrthing!"
-        },
-        {
-            "question_title": "What JIT within Programming",
-            "options": [
-                "Just-in Time",
-                "Just inside Tool",
-                "Jetpack Information Tool",
-                "Something..."
-            ],
-            "correct_ans": "Just-in Time"
-        }
-    ]
+    "quiz-one": {
+        "quiz-title": "General Knowledge",
+        "questions": [
+            {
+                "question_title": "What is the meaning of life?",
+                "options": [
+                    "N/A",
+                    "Nothing",
+                    "Everything!",
+                    "I don't know!"
+                ],
+                "correct_ans": "Everything!"
+            },
+            {
+                "question_title": "What JIT within Programming",
+                "options": [
+                    "Just-in Time",
+                    "Just inside Tool",
+                    "Jetpack Information Tool",
+                    "Something..."
+                ],
+                "correct_ans": "Just-in Time"
+            }
+        ]
+    },
+    "quiz-two": {
+        "quiz-title": "General Knowledge",
+        "questions": [
+            {
+                "question_title": "What is the meaning of life?",
+                "options": [
+                    "N/A",
+                    "Nothing",
+                    "Everything!",
+                    "I don't know!"
+                ],
+                "correct_ans": "Everything!"
+            },
+            {
+                "question_title": "What JIT within Programming",
+                "options": [
+                    "Just-in Time",
+                    "Just inside Tool",
+                    "Jetpack Information Tool",
+                    "Something..."
+                ],
+                "correct_ans": "Just-in Time"
+            }
+        ]
+    }
 }
