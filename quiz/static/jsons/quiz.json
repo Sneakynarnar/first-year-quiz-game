@@ -1,52 +1,295 @@
 {
     "quiz-one": {
-        "quiz-title": "General Knowledge",
-        "questions": [
-            {
+      "quiz-title": "General Knowledge",
+      "questions": [
+        {
+          "quiz-programming": {
+            "quiz-title": "Programming",
+            "questions": [
+              {
+                "question_title": "What data type is used to store non-whole numbers?",
+                "options": [
+                  "Integer",
+                  "Float",
+                  "Boolean",
+                  "String"
+                ],
+                "correct_ans": 1
+              },
+              {
+                "question_title": "Which data type is used to store two values: TRUE or FALSE?",
+                "options": [
+                  "Boolean",
+                  "String",
+                  "Integer",
+                  "Float"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What does the symbol < mean in programming?",
+                "options": [
+                  "Less than",
+                  "Greater than",
+                  "Equal to",
+                  "Not Equal to"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What data type is used to store whole numbers?",
+                "options": [
+                  "Integer",
+                  "Float",
+                  "Boolean",
+                  "String"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "How do you create a list?",
+                "options": [
+                  "Using square brackets []",
+                  "Using curly braces {}",
+                  "Using parentheses ()",
+                  "Using a function"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the purpose of the split() method?",
+                "options": [
+                  "To concatenate strings",
+                  "To split a string into a list of substrings",
+                  "To merge a list of strings into one string",
+                  "To count the number of characters in a string"
+                ],
+                "correct_ans": 1
+              },
+              {
+                "question_title": "How do you open a file in Python for reading?",
+                "options": [
+                  "open(\"filename\", \"r\")",
+                  "open(\"filename\", \"read\")",
+                  "open(\"filename\")"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the purpose of the ord() function?",
+                "options": [
+                  "Converts a character to its ASCII value",
+                  "Converts a string to a list of characters",
+                  "Changes the order of a string",
+                  "Counts the number of characters in a string"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "Which of the following is the correct way to format a string?",
+                "options": [
+                  "print(\"Hello, {name}!\".format(name= \"World\"))",
+                  "print(\"Hello, {name}!\".replace(name= \"World\"))",
+                  "print(\"Hello, {name}!\".format(\"World\"))",
+                  "print(\"Hello, {name}!\".replace(\"World\"))"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the output of this expression: 2 ** 3",
+                "options": [
+                  "5",
+                  "6",
+                  "8",
+                  "9"
+                ],
+                "correct_ans": 2
+              },
+              {
+                "question_title": "Which operator is used for exponentiation?",
+                "options": [
+                  "*",
+                  "//",
+                  "**",
+                  "||"
+                ],
+                "correct_ans": 2
+              },
+              {
+                "question_title": "Which of the following is NOT a valid loop statement?",
+                "options": [
+                  "for",
+                  "while",
+                  "until",
+                  "do-while"
+                ],
+                "correct_ans": 2
+              },
+              {
+                "question_title": "How do you define a comment?",
+                "options": [
+                  "#",
+                  "//",
+                  "/* */",
+                  "<- ->"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "Which is NOT a valid Python data type?",
+                "options": [
+                  "int",
+                  "float",
+                  "byte",
+                  "bool"
+                ],
+                "correct_ans": 2
+              },
+              {
+                "question_title": "What is the purpose of the 'is' operator?",
+                "options": [
+                  "To check if two variables point to the same object",
+                  "To check if a variable is an instance of a class",
+                  "To check if a variable is of a certain type",
+                  "To check if a variable is not found"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the output of the following expression: 10 // 3",
+                "options": [
+                  "3",
+                  "3.0",
+                  "3.33",
+                  "30"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the output of the following expression: 10 % 3",
+                "options": [
+                  "3",
+                  "1",
+                  "0",
+                  "10"
+                ],
+                "correct_ans": 1
+              },
+              {
+                "question_title": "What is the purpose of the 'break' statement?",
+                "options": [
+                  "To pause a loop",
+                  "To exit a loop",
+                  "To skip the current iteration of a loop",
+                  "To start a new iteration of a loop"
+                ],
+                "correct_ans": 1
+              },
+              {
+                "question_title": "What is the output of the following expression: 'hello' * 3",
+                "options": [
+                  "hellohellohello",
+                  "hello hello hello",
+                  "hello",
+                  "Hello, hello, hello"
+                ],
+                "correct_ans": 0
+              },
+              {
+                "question_title": "What is the purpose of the 'if' statement?",
+                "options": [
+                  "To declare a variable",
+                  "To define a loop construct",
+                  "To perform a conditional check",
+                  "To exit a loop or switch statement"
+                ],
+                "correct_ans": 2
+              }
+            ]
+          }
+        },
+        {
+          "quiz-two": {
+            "quiz-title": "General Knowledge",
+            "questions": [
+              {
+                "question_title": "What does the symbol < mean in programming",
+                "options": [
+                  "Less than",
+                  "Greater than",
+                  "Equal to",
+                  "Not Equal to"
+                ],
+                "correct_ans": "Less than"
+              },
+              {
+                "question_title": "",
+                "options": [
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                "correct_ans": ""
+              }
+            ]
+          }
+        },
+        {
+          "quiz-three": {
+            "quiz-title": "Knowledge",
+            "questions": [
+              {
                 "question_title": "What is the meaning of life?",
                 "options": [
-                    "N/A",
-                    "Nothing",
-                    "Everything!",
-                    "I don't know!"
+                  "N/A",
+                  "Nothing",
+                  "Everything!",
+                  "I don't know!"
                 ],
                 "correct_ans": "Everything!"
-            },
-            {
-                "question_title": "What JIT within Programming",
+              },
+              {
+                "question_title": "What is JIT within Programming",
                 "options": [
-                    "Just-in Time",
-                    "Just inside Tool",
-                    "Jetpack Information Tool",
-                    "Something..."
+                  "Just-in Time",
+                  "Just inside Tool",
+                  "Jetpack Information Tool",
+                  "Something..."
                 ],
                 "correct_ans": "Just-in Time"
-            }
-        ]
-    },
-    "quiz-two": {
-        "quiz-title": "General Knowledge",
-        "questions": [
-            {
+              }
+            ]
+          }
+        },
+        {
+          "quiz-four": {
+            "quiz-title": "General Knowledge",
+            "questions": [
+              {
                 "question_title": "What is the meaning of life?",
                 "options": [
-                    "N/A",
-                    "Nothing",
-                    "Everything!",
-                    "I don't know!"
+                  "N/A",
+                  "Nothing",
+                  "Everything!",
+                  "I don't know!"
                 ],
                 "correct_ans": "Everything!"
-            },
-            {
+              },
+              {
                 "question_title": "What JIT within Programming",
                 "options": [
-                    "Just-in Time",
-                    "Just inside Tool",
-                    "Jetpack Information Tool",
-                    "Something..."
+                  "Just-in Time",
+                  "Just inside Tool",
+                  "Jetpack Information Tool",
+                  "Something..."
                 ],
                 "correct_ans": "Just-in Time"
-            }
-        ]
+              }
+            ]
+          }
+        }
+      ]
     }
-}
+  }
+  

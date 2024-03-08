@@ -1,2 +1,2 @@
-django
-django-compressor
+django==5.0.3
+django-compressor==4.4
