@@ -18,14 +18,17 @@
  
 </head>
  
-<body class="bg-slate-950">
+<body class="bg-slate-200">
 
     {% include 'nav.html' %}
 
-    <div class="container mx-auto mt-4">
+    <div class="container mx-auto mt-4 ">
         {% block content %}
         {% endblock content %}
     </div>
+
+    {% include 'footer.html' %}
+
 </body>
  
 </html>
