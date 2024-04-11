@@ -24,7 +24,6 @@ socket.on('roomsList', (rooms) => {
     joinButton.textContent = 'Join';
     joinButton.classList.add('joinRoom');
 
-    // Event delegation for dynamically created join buttons
     roomItem.addEventListener('click', (event) => { 
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);
