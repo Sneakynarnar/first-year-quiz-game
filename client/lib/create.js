@@ -11,6 +11,7 @@ const createRoomSection = document.querySelector('#createRoom');
 // const roomJoinSection = document.querySelector('#roomJoin');
 let currentRoom = '';
 let studentId = '';
+
 function hideSection(section) {
   section.classList.add('hidden');
 }
@@ -22,6 +23,14 @@ function toggleSection(section) {
 function sendMessage(message) {
   socket.emit('sendMessage', currentRoom, socket.id, message);
 }
+
+function getCurrentTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 socket.on('roomsList', (rooms) => {
   console.log(`Available Rooms: ${rooms}`);
 
@@ -77,10 +86,11 @@ btnRooms.addEventListener('click', () => {
 
 socket.on('message', (id, messageContent) => {
   const messageItem = document.createElement('li');
-  const message = `(${id}): ${messageContent}`;
-  messageItem.textContent = message;
+  const chatList = document.querySelector('#chatText');
+  const message = `<b class="text-blue-500">${getCurrentTime()}</b> – (${id}): ${messageContent}`;
+  messageItem.innerHTML = message;
   console.log(message);
-  userList.appendChild(messageItem);
+  chatList.appendChild(messageItem);
 });
 socket.on('userJoined', (userId) => {
   const userItem = document.createElement('li');
@@ -109,4 +119,17 @@ socket.on('roomDeleted', (roomId) => {
 document.querySelector('#quitRoom').addEventListener('click', () => {
   socket.emit('quitRoom');
   console.log('Quit Roomed');
+});
+
+document.querySelector('#chat').addEventListener('submit', (event) => {
+  event.preventDefault();
+  
+  const messageInput = document.querySelector('#chat textarea');
+  const messageContent = messageInput.value.trim();
+
+  if (messageContent !== '') {
+    sendMessage(messageContent);
+
+    messageInput.value = '';
+  }
 });
