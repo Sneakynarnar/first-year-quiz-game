@@ -3,13 +3,14 @@ const socket = io();
 // Buttons
 const btnCreate = document.querySelector('#createRoom');
 const btnRooms = document.querySelector('#getRooms');
-
 // Sections
+const userList = document.querySelector('.user-list');
 const optionSection = document.querySelector('#options');
 const showRoomSection = document.querySelector('#showRoom');
 const createRoomSection = document.querySelector('#createRoom');
 // const roomJoinSection = document.querySelector('#roomJoin');
-
+let currentRoom = '';
+let studentId = '';
 function hideSection(section) {
   section.classList.add('hidden');
 }
@@ -18,6 +19,9 @@ function toggleSection(section) {
   section.classList.remove('hidden');
 }
 
+function sendMessage(message) {
+  socket.emit('sendMessage', currentRoom, socket.id, message);
+}
 socket.on('roomsList', (rooms) => {
   console.log(`Available Rooms: ${rooms}`);
 
@@ -41,6 +45,7 @@ socket.on('roomsList', (rooms) => {
     roomItem.addEventListener('click', (event) => {
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);
+        currentRoom = roomId;
       }
     });
 
@@ -52,7 +57,7 @@ socket.on('roomsList', (rooms) => {
 });
 
 btnCreate.addEventListener('click', () => {
-  hideSection(optionSection)
+  hideSection(optionSection);
   socket.emit('createRoom');
 });
 
@@ -60,6 +65,7 @@ socket.on('roomCreated', (roomId) => {
   console.log(`Room Created: ${roomId}`);
   toggleSection(createRoomSection);
   const roomText = document.querySelector('#roomText');
+  currentRoom = roomId;
   roomText.innerHTML = `Room ID: <b>${roomId}</b>`;
   console.log(`A room has been created: ${roomId}`);
 });
@@ -69,11 +75,16 @@ btnRooms.addEventListener('click', () => {
   console.log('clicked');
 });
 
+socket.on('message', (id, messageContent) => {
+  const messageItem = document.createElement('li');
+  const message = `(${id}): ${messageContent}`;
+  messageItem.textContent = message;
+  console.log(message);
+  userList.appendChild(messageItem);
+});
 socket.on('userJoined', (userId) => {
   const userItem = document.createElement('li');
   userItem.textContent = `User ID: ${userId} joined the room`;
-
-  const userList = document.querySelector('.user-list');
   userList.appendChild(userItem);
 });
 

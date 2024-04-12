@@ -31,7 +31,6 @@ app.get('/play', (req, res) => {
 
 // app.get('/room/:roomId', (req, res) => {
 //   const roomId = req.params.roomId;
-
 //   const roomFilePath = path.join(__dirname, '..', 'client', 'room', 'index.html');
 //   res.sendFile(roomFilePath);
 // });
@@ -46,7 +45,7 @@ server.listen(port, () => {
 });
 
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  console.log(`A ${socket.id} connected`);
 
   socket.on('createRoom', () => {
     const roomId = uuidv4();
@@ -61,10 +60,12 @@ io.on('connection', (socket) => {
     socket.emit('roomsList', Array.from(activeRooms.keys()));
   });
 
+
+  //socket._cleanupon('e');
   socket.on('joinRoom', (roomId) => {
     if (activeRooms.has(roomId)) {
       socket.join(roomId);
-      console.log(`User joined room ${roomId}`);
+      console.log(`${socket.id} joined room ${roomId}`);
       io.to(roomId).emit('userJoined', socket.id);
     } else {
       socket.emit('roomError', 'Invalid Room ID');
@@ -75,12 +76,22 @@ io.on('connection', (socket) => {
     // Get the room ID of the socket
     const rooms = Object.keys(socket.rooms);
     const roomId = rooms.find(roomId => roomId !== socket.id);
-
     // If room exists, delete it
     if (roomId && activeRooms.has(roomId)) {
       activeRooms.delete(roomId);
       console.log(`Room ${roomId} has been deleted`);
       io.emit('roomDeleted', roomId);
+    }
+  });
+
+  socket.on('sendMessage', (roomId, studentId, messageContent) => {
+    // const rooms = Object.keys(socket.rooms);
+    console.log(`roomId: ${roomId}, studentId: ${studentId}, messageContent ${messageContent}`);
+    if (activeRooms.has(roomId)) {
+      console.log(messageContent);
+      io.to(roomId).emit('message', studentId, messageContent);
+    } else {
+      socket.emit('roomError', 'Invalid Room ID');
     }
   });
 
