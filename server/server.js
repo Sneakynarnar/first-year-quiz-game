@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
+import Filter from 'bad-words';
+
+const filter = new Filter();
 
 dotenv.config();
 
@@ -89,7 +92,8 @@ io.on('connection', (socket) => {
     console.log(`roomId: ${roomId}, studentId: ${studentId}, messageContent ${messageContent}`);
     if (activeRooms.has(roomId)) {
       console.log(messageContent);
-      io.to(roomId).emit('message', studentId, messageContent);
+      const cleanMessage = filter.clean(messageContent);
+      io.to(roomId).emit('message', studentId, cleanMessage);
     } else {
       socket.emit('roomError', 'Invalid Room ID');
     }
