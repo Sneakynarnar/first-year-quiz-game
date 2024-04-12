@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, '..', 'client')));
 const server = http.createServer(app);
 const io = new Server(server);
 
-let activeRooms = new Map();
+const activeRooms = new Map();
 
 app.get('/play', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'play', 'index.html'));
@@ -89,7 +89,4 @@ io.on('connection', (socket) => {
     console.log(`User ${socket.id} disconnected`);
     io.emit('userLeft', socket.id);
   });
-
-
-
 });
