@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
+    "setup": "node server/setup.mjs",
     "tailwind": "npx tailwindcss -i client/src/input.css -o client/src/output.css --watch",
     "lint": "npx eslint"
   },
@@ -17,6 +18,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "socket.io": "^4.7.5",
+    "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "uuid": "^9.0.1"
   },
