@@ -42,7 +42,7 @@ app.get('/play', (req, res) => {
 // });
 
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
 io.on('connection', (socket) => {
