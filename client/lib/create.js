@@ -8,11 +8,9 @@ const userList = document.querySelector('.user-list');
 const optionSection = document.querySelector('#options');
 const showRoomSection = document.querySelector('#showRoom');
 const createRoomSection = document.querySelector('#createRoom');
-// const roomJoinSection = document.querySelector('#roomJoin');
-
+const playAreaSection = document.querySelector('#playArea');
 
 let currentRoom = '';
-let studentId = '';
 
 function hideSection(section) {
   section.classList.add('hidden');
@@ -20,18 +18,6 @@ function hideSection(section) {
 
 function toggleSection(section) {
   section.classList.remove('hidden');
-}
-
-function sendMessage(message) {
-  socket.emit('sendMessage', currentRoom, socket.id, message);
-}
-
-function getCurrentTime() {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
-  return `${hours}:${minutes}:${seconds}`;
 }
 
 socket.on('roomsList', (rooms) => {
@@ -71,6 +57,7 @@ socket.on('roomsList', (rooms) => {
 btnCreate.addEventListener('click', () => {
   hideSection(optionSection);
   socket.emit('createRoom');
+  socket.emit('getQuestions');
 });
 
 socket.on('roomCreated', (roomId) => {
@@ -95,6 +82,7 @@ socket.on('message', (id, messageContent) => {
   console.log(message);
   chatList.appendChild(messageItem);
 });
+
 socket.on('userJoined', (userId) => {
   const userItem = document.createElement('li');
   userItem.textContent = `User ID: ${userId} joined the room`;
@@ -137,27 +125,112 @@ document.querySelector('#chat').addEventListener('submit', (event) => {
   }
 });
 
-fetch('../questions.json')
-  .then(res => res.json())
-  .then(json => {
-    const quizTitles = Object.values(json).map(quiz => quiz['quiz-title']);
+socket.on('questionsList', (questions) => {
+  displayQuestions(questions);
+});
 
-    const quizSelect = document.querySelector('#quizSelect');
-    quizTitles.forEach(title => {
-      const option = document.createElement('option');
-      option.value = title;
-      option.textContent = title;
-      quizSelect.appendChild(option);
-    });
+function displayQuestions(questions) {
+  const playArea = document.querySelector('#playArea');
+  playArea.innerHTML = ''; // Clear the play area
 
-    quizSelect.addEventListener('change', (e) => {
-      const selectedQuizTitle = e.target.value;
-      if (selectedQuizTitle) {
-        const selectedQuiz = Object.values(json).find(quiz => quiz['quiz-title'] === selectedQuizTitle);
-        console.log(selectedQuiz);
-      } else {
-        console.log("Error");
-      }
+  if (Array.isArray(questions)) {
+    questions.forEach((question, index) => {
+      const questionContainer = document.createElement('div');
+      questionContainer.classList.add('question-container');
+
+      const questionTitle = document.createElement('h2');
+      questionTitle.textContent = `Question ${index + 1}: ${question.question_title}`;
+
+      const optionsList = document.createElement('ul');
+      question.options.forEach((option, optionIndex) => {
+        const optionItem = document.createElement('li');
+        optionItem.textContent = option;
+
+        optionItem.addEventListener('click', () => {
+          socket.emit('answer', { roomId: currentRoom, questionIndex: index, selectedOption: optionIndex });
+        });
+
+        optionsList.appendChild(optionItem);
+      });
+
+      questionContainer.appendChild(questionTitle);
+      questionContainer.appendChild(optionsList);
+
+      playArea.appendChild(questionContainer);
     });
-  })
-  .catch(err => console.error('Error Fetching JSON: ', err));
+  } else if (typeof questions === 'object') {
+    Object.keys(questions).forEach((quizKey) => {
+      const quiz = questions[quizKey];
+      const quizTitle = document.createElement('h2');
+      quizTitle.textContent = quiz['quiz-title'];
+      playArea.appendChild(quizTitle);
+      
+      quiz.questions.forEach((question, index) => {
+        const questionContainer = document.createElement('div');
+        questionContainer.classList.add('question-container');
+
+        const questionTitle = document.createElement('h3');
+        questionTitle.textContent = `Question ${index + 1}: ${question.question_title}`;
+
+        const optionsList = document.createElement('ul');
+        question.options.forEach((option, optionIndex) => {
+          const optionItem = document.createElement('li');
+          optionItem.textContent = option;
+
+          optionItem.addEventListener('click', () => {
+            socket.emit('answer', { roomId: currentRoom, questionIndex: index, selectedOption: optionIndex });
+          });
+
+          optionsList.appendChild(optionItem);
+        });
+
+        questionContainer.appendChild(questionTitle);
+        questionContainer.appendChild(optionsList);
+
+        playArea.appendChild(questionContainer);
+      });
+    });
+  }
+}
+
+socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
+  const questionContainers = document.querySelectorAll('.question-container');
+  const currentQuestionContainer = questionContainers[questionIndex];
+  const options = currentQuestionContainer.querySelectorAll('li');
+
+  options.forEach((option, index) => {
+    if (index === correctOption) {
+      option.classList.add('correct-answer');
+    }
+  });
+});
+
+socket.on('wrongAnswer', ({ questionIndex, selectedOption, correctOption }) => {
+  const questionContainers = document.querySelectorAll('.question-container');
+  const currentQuestionContainer = questionContainers[questionIndex];
+  const options = currentQuestionContainer.querySelectorAll('li');
+
+  options.forEach((option, index) => {
+    if (index === selectedOption) {
+      option.classList.add('wrong-answer');
+    }
+    if (index === correctOption) {
+      option.classList.add('correct-answer');
+    }
+  });
+});
+
+function sendMessage(message) {
+  socket.emit('sendMessage', currentRoom, socket.id, message);
+}
+
+function getCurrentTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
+document.querySelector('#btnRed').addEventListener('click', () => {
+  socket.emit('answer', { roomId: currentRoom, answer: 'Red' });
+});

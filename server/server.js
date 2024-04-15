@@ -6,7 +6,14 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
+import fs from 'fs';
 import Filter from 'bad-words';
+
+// Quiz Bank;
+const questions = JSON.parse(fs.readFileSync('./questions.json', 'utf8'));
+
+console.log(questions)
+
 
 const filter = new Filter();
 
@@ -32,17 +39,6 @@ app.get('/play', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'play', 'index.html'));
 });
 
-// app.get('/room/:roomId', (req, res) => {
-//   const roomId = req.params.roomId;
-//   const roomFilePath = path.join(__dirname, '..', 'client', 'room', 'index.html');
-//   res.sendFile(roomFilePath);
-// });
-
-// app.get('/create', (req, res) => {
-//   const createFilePath = path.join(__dirname, '..', 'client', 'create', 'index.html');
-//   res.sendFile(createFilePath);
-// });
-
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
@@ -63,8 +59,14 @@ io.on('connection', (socket) => {
     socket.emit('roomsList', Array.from(activeRooms.keys()));
   });
 
+  socket.on('getQuestions', () => {
+    socket.emit('questionsList', questions);
+  });
 
-  //socket._cleanupon('e');
+  socket.on('answer', ({ roomId, answer }) => {
+    console.log(`Received answer from ${socket.id} in room ${roomId}: ${answer}`);
+  });
+
   socket.on('joinRoom', (roomId) => {
     if (activeRooms.has(roomId)) {
       socket.join(roomId);
@@ -76,10 +78,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('quitRoom', () => {
-    // Get the room ID of the socket
     const rooms = Object.keys(socket.rooms);
     const roomId = rooms.find(roomId => roomId !== socket.id);
-    // If room exists, delete it
     if (roomId && activeRooms.has(roomId)) {
       activeRooms.delete(roomId);
       console.log(`Room ${roomId} has been deleted`);
@@ -88,8 +88,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendMessage', (roomId, studentId, messageContent) => {
-    // const rooms = Object.keys(socket.rooms);
-    console.log(`roomId: ${roomId}, studentId: ${studentId}, messageContent: ${messageContent}`);
     if (activeRooms.has(roomId)) {
       console.log(messageContent);
       const cleanMessage = filter.clean(messageContent);
@@ -98,7 +96,6 @@ io.on('connection', (socket) => {
       socket.emit('roomError', 'Invalid Room ID');
     }
   });
-
 
   socket.on('disconnect', () => {
     console.log(`User ${socket.id} disconnected`);
