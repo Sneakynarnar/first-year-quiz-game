@@ -3,6 +3,7 @@ const socket = io();
 // Buttons
 const btnCreate = document.querySelector('#createRoom');
 const btnRooms = document.querySelector('#getRooms');
+const btnStart = document.querySelector('#startQuiz');
 // Sections
 const userList = document.querySelector('.user-list');
 const optionSection = document.querySelector('#options');
@@ -11,6 +12,8 @@ const createRoomSection = document.querySelector('#createRoom');
 const playAreaSection = document.querySelector('#playArea');
 
 let currentRoom = '';
+let isTeacher = false;
+let questionsLoaded = false;
 
 function hideSection(section) {
   section.classList.add('hidden');
@@ -57,7 +60,18 @@ socket.on('roomsList', (rooms) => {
 btnCreate.addEventListener('click', () => {
   hideSection(optionSection);
   socket.emit('createRoom');
-  socket.emit('getQuestions');
+  isTeacher = true;
+});
+
+btnRooms.addEventListener('click', () => {
+  socket.emit('getRooms');
+});
+
+btnStart.addEventListener('click', () => { 
+  socket.emit('startQuiz')
+  if (isTeacher && !questionsLoaded) { 
+    socket.emit('getQuestions');
+  }
 });
 
 socket.on('roomCreated', (roomId) => {
@@ -69,19 +83,19 @@ socket.on('roomCreated', (roomId) => {
   console.log(`A room has been created: ${roomId}`);
 });
 
-btnRooms.addEventListener('click', () => {
-  socket.emit('getRooms');
-  console.log('clicked');
-});
-
 socket.on('message', (id, messageContent) => {
   const messageItem = document.createElement('li');
   const chatList = document.querySelector('#chatText');
   const message = `<b class="text-blue-500">${getCurrentTime()}</b> – (${id}): ${messageContent}`;
-  messageItem.textContent = message;
+  messageItem.innerHTML = message;
   console.log(message);
   chatList.appendChild(messageItem);
 });
+
+socket.on('quizStarted', (questions) => {
+  console.log('Quiz Started');
+  displayFirstQuestion(questions);
+})
 
 socket.on('userJoined', (userId) => {
   const userItem = document.createElement('li');
@@ -126,72 +140,10 @@ document.querySelector('#chat').addEventListener('submit', (event) => {
 });
 
 socket.on('questionsList', (questions) => {
-  displayQuestions(questions);
+  console.log('recieved questions', questions)
+  questionsLoaded = true; // Set questions loaded to true
+  displayFirstQuestion(questions);
 });
-
-function displayQuestions(questions) {
-  const playArea = document.querySelector('#playArea');
-  playArea.innerHTML = ''; // Clear the play area
-
-  if (Array.isArray(questions)) {
-    questions.forEach((question, index) => {
-      const questionContainer = document.createElement('div');
-      questionContainer.classList.add('question-container');
-
-      const questionTitle = document.createElement('h2');
-      questionTitle.textContent = `Question ${index + 1}: ${question.question_title}`;
-
-      const optionsList = document.createElement('ul');
-      question.options.forEach((option, optionIndex) => {
-        const optionItem = document.createElement('li');
-        optionItem.textContent = option;
-
-        optionItem.addEventListener('click', () => {
-          socket.emit('answer', { roomId: currentRoom, questionIndex: index, selectedOption: optionIndex });
-        });
-
-        optionsList.appendChild(optionItem);
-      });
-
-      questionContainer.appendChild(questionTitle);
-      questionContainer.appendChild(optionsList);
-
-      playArea.appendChild(questionContainer);
-    });
-  } else if (typeof questions === 'object') {
-    Object.keys(questions).forEach((quizKey) => {
-      const quiz = questions[quizKey];
-      const quizTitle = document.createElement('h2');
-      quizTitle.textContent = quiz['quiz-title'];
-      playArea.appendChild(quizTitle);
-      
-      quiz.questions.forEach((question, index) => {
-        const questionContainer = document.createElement('div');
-        questionContainer.classList.add('question-container');
-
-        const questionTitle = document.createElement('h3');
-        questionTitle.textContent = `Question ${index + 1}: ${question.question_title}`;
-
-        const optionsList = document.createElement('ul');
-        question.options.forEach((option, optionIndex) => {
-          const optionItem = document.createElement('li');
-          optionItem.textContent = option;
-
-          optionItem.addEventListener('click', () => {
-            socket.emit('answer', { roomId: currentRoom, questionIndex: index, selectedOption: optionIndex });
-          });
-
-          optionsList.appendChild(optionItem);
-        });
-
-        questionContainer.appendChild(questionTitle);
-        questionContainer.appendChild(optionsList);
-
-        playArea.appendChild(questionContainer);
-      });
-    });
-  }
-}
 
 socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
   const questionContainers = document.querySelectorAll('.question-container');
@@ -234,3 +186,35 @@ function getCurrentTime() {
 document.querySelector('#btnRed').addEventListener('click', () => {
   socket.emit('answer', { roomId: currentRoom, answer: 'Red' });
 });
+
+function displayFirstQuestion(questions) {
+  const firstQuizQuestions = questions['quiz-one'].questions;
+
+  if (isTeacher) {
+    console.log('im a teacher');
+    const questionTitleElement = document.createElement('h2');
+    questionTitleElement.textContent = firstQuizQuestions[0].question_title;
+    const questionContainer = document.querySelector('#questionContainer');
+    questionContainer.innerHTML = ''; // Clear previous content
+    questionContainer.appendChild(questionTitleElement);
+  }
+
+  if (!isTeacher) {
+    console.log('im not a teacher')
+    const optionsList = firstQuizQuestions[0].options;
+    const optionsListElement = document.createElement('ul');
+
+    optionsList.forEach((option, index) => {
+      const optionItem = document.createElement('li');
+      optionItem.textContent = option;
+      optionItem.addEventListener('click', () => {
+        socket.emit('answer', { roomId: currentRoom, answer: option });
+      });
+      optionsListElement.appendChild(optionItem);
+    });
+
+    const questionContainer = document.querySelector('#questionContainer');
+    questionContainer.innerHTML = ''; 
+    questionContainer.appendChild(optionsListElement);
+  }
+}

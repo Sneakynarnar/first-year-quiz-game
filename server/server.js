@@ -54,6 +54,10 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('roomCreated', roomId);
   });
 
+  socket.on('startQuiz', () => {
+    io.emit('quizStarted', questions);
+  });
+
   socket.on('getRooms', () => {
     console.log('Client requested room list');
     socket.emit('roomsList', Array.from(activeRooms.keys()));
@@ -66,6 +70,7 @@ io.on('connection', (socket) => {
   socket.on('answer', ({ roomId, answer }) => {
     console.log(`Received answer from ${socket.id} in room ${roomId}: ${answer}`);
   });
+
 
   socket.on('joinRoom', (roomId) => {
     if (activeRooms.has(roomId)) {
