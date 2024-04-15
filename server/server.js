@@ -44,7 +44,17 @@ server.listen(port, () => {
 });
 
 io.on('connection', (socket) => {
+  let timers = {};
+
   console.log(`A ${socket.id} connected`);
+
+  const startTime = (roomId, questionIndex) => {
+    timers[roomId] = setTimeout(() => {
+      const correctOption  = questions[roomId].questions[questionIndex].correct_ans;
+      io.emit('correctAnswer', { roomId, questionIndex, correctOption });
+      delete timers[roomId];
+    }, 10000);
+  }
 
   socket.on('createRoom', () => {
     const roomId = uuidv4();
@@ -54,8 +64,8 @@ io.on('connection', (socket) => {
     io.to(roomId).emit('roomCreated', roomId);
   });
 
-  socket.on('startQuiz', () => {
-    io.emit('quizStarted', questions);
+  socket.on('startQuiz', (roomId) => {
+    io.to(roomId).emit('quizStarted', questions);
   });
 
   socket.on('getRooms', () => {
@@ -69,6 +79,7 @@ io.on('connection', (socket) => {
 
   socket.on('answer', ({ roomId, answer }) => {
     console.log(`Received answer from ${socket.id} in room ${roomId}: ${answer}`);
+    clearTimer();
   });
 
 

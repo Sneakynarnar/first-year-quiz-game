@@ -74,7 +74,7 @@ btnRooms.addEventListener('click', () => {
 });
 
 btnStart.addEventListener('click', () => {
-  socket.emit('startQuiz')
+  socket.emit('startQuiz', currentRoom)
   if (isTeacher && !questionsLoaded) {
     socket.emit('getQuestions');
   }
