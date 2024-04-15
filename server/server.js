@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
 
   socket.on('sendMessage', (roomId, studentId, messageContent) => {
     // const rooms = Object.keys(socket.rooms);
-    console.log(`roomId: ${roomId}, studentId: ${studentId}, messageContent ${messageContent}`);
+    console.log(`roomId: ${roomId}, studentId: ${studentId}, messageContent: ${messageContent}`);
     if (activeRooms.has(roomId)) {
       console.log(messageContent);
       const cleanMessage = filter.clean(messageContent);
