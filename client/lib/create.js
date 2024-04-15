@@ -11,6 +11,12 @@ const showRoomSection = document.querySelector('#showRoom');
 const createRoomSection = document.querySelector('#createRoom');
 const playAreaSection = document.querySelector('#playArea');
 
+// Answer Buttons
+let btnRed = document.querySelector('#btnRed');
+let btnBlue = document.querySelector('#btnBlue');
+let btnGreen = document.querySelector('#btnGreen');
+let btnYellow = document.querySelector('#btnYellow');
+
 let currentRoom = '';
 let isTeacher = false;
 let questionsLoaded = false;
@@ -67,9 +73,9 @@ btnRooms.addEventListener('click', () => {
   socket.emit('getRooms');
 });
 
-btnStart.addEventListener('click', () => { 
+btnStart.addEventListener('click', () => {
   socket.emit('startQuiz')
-  if (isTeacher && !questionsLoaded) { 
+  if (isTeacher && !questionsLoaded) {
     socket.emit('getQuestions');
   }
 });
@@ -128,7 +134,7 @@ document.querySelector('#quitRoom').addEventListener('click', () => {
 
 document.querySelector('#chat').addEventListener('submit', (event) => {
   event.preventDefault();
-  
+
   const messageInput = document.querySelector('#chat textarea');
   const messageContent = messageInput.value.trim();
 
@@ -204,6 +210,15 @@ function displayFirstQuestion(questions) {
     const optionsList = firstQuizQuestions[0].options;
     const optionsListElement = document.createElement('ul');
 
+
+    console.log(optionsList[0]);
+
+    btnRed.textContent = optionsList[0];
+    btnBlue.textContent = optionsList[1];
+    btnGreen.textContent = optionsList[2];
+    btnYellow.textContent = optionsList[3];
+
+
     optionsList.forEach((option, index) => {
       const optionItem = document.createElement('li');
       optionItem.textContent = option;
@@ -214,7 +229,7 @@ function displayFirstQuestion(questions) {
     });
 
     const questionContainer = document.querySelector('#questionContainer');
-    questionContainer.innerHTML = ''; 
+    questionContainer.innerHTML = '';
     questionContainer.appendChild(optionsListElement);
   }
 }
