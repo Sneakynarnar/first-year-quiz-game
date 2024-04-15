@@ -5,6 +5,7 @@
 <title>Qahoot!</title>
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<link rel="icon" href="../media/favicon.svg" sizes="any" type="image/svg+xml" />
 
 
 <div class="antialiased bg-gray-100 dark-mode:bg-gray-900">
@@ -57,8 +58,11 @@
             <div class="w-1/2 p-8">
                 <div class="text-3xl font-bold text-center mb-8">Quiz Options</div>
                 <p id="roomText"></p>
+                <h1>Host a Quiz</h1>
+                <select id="quizSelect">
+                </select>
                 <div class="flex gap-4">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Start
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" id="startQuiz">Start
                         </button>
                     <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full" id="quitRoom">Quit
                         </button>
@@ -75,8 +79,8 @@
                 <ul id="chatText"></ul>
                 <form id="chat">
                     <label for="chat" class="sr-only">Your message</label>
-                    <div class="flex items-center py-2 px-3 bg-gray-50 rounded-lg dark:bg-gray-700">
-                        <textarea id="chat" rows="1" class="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
+                    <div class="flex items-center bg-gray-50 rounded-lg dark:bg-gray-700">
+                        <textarea id="chat" rows="1" class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your message..."></textarea>
                             <button type="submit" class="inline-flex justify-center p-2 text-blue-500 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
                             <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
                         </button>
@@ -88,5 +92,22 @@
     <section id="roomJoin">
     </section>
 </div>
+<section id="playArea">
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-red-500 p-4 rounded-lg">
+            <button class="bg-white text-red-500 font-bold py-2 px-4 rounded-full w-full" id="btnRed">Answer</button>
+        </div>
+        <div class="bg-blue-500 p-4 rounded-lg">
+            <button class="bg-white text-blue-500 font-bold py-2 px-4 rounded-full w-full" id="btnBlue">Answer</button>
+        </div>
+        <div class="bg-green-500 p-4 rounded-lg">
+            <button class="bg-white text-green-500 font-bold py-2 px-4 rounded-full w-full" id="btnGreen">Answer</button>
+        </div>
+        <div class="bg-yellow-500 p-4 rounded-lg">
+            <button class="bg-white text-yellow-500 font-bold py-2 px-4 rounded-full w-full" id="btnYellow">Answer</button>
+        </div>
+    </div>
+    
+</section>
 
 <script src="../lib/create.js"></script>

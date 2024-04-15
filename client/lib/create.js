@@ -9,6 +9,8 @@ const optionSection = document.querySelector('#options');
 const showRoomSection = document.querySelector('#showRoom');
 const createRoomSection = document.querySelector('#createRoom');
 // const roomJoinSection = document.querySelector('#roomJoin');
+
+
 let currentRoom = '';
 let studentId = '';
 
@@ -28,7 +30,8 @@ function getCurrentTime() {
   const now = new Date();
   const hours = String(now.getHours()).padStart(2, '0');
   const minutes = String(now.getMinutes()).padStart(2, '0');
-  return `${hours}:${minutes}`;
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+  return `${hours}:${minutes}:${seconds}`;
 }
 
 socket.on('roomsList', (rooms) => {
@@ -88,7 +91,7 @@ socket.on('message', (id, messageContent) => {
   const messageItem = document.createElement('li');
   const chatList = document.querySelector('#chatText');
   const message = `<b class="text-blue-500">${getCurrentTime()}</b> – (${id}): ${messageContent}`;
-  messageItem.innerHTML = message;
+  messageItem.textContent = message;
   console.log(message);
   chatList.appendChild(messageItem);
 });
@@ -133,3 +136,28 @@ document.querySelector('#chat').addEventListener('submit', (event) => {
     messageInput.value = '';
   }
 });
+
+fetch('../questions.json')
+  .then(res => res.json())
+  .then(json => {
+    const quizTitles = Object.values(json).map(quiz => quiz['quiz-title']);
+
+    const quizSelect = document.querySelector('#quizSelect');
+    quizTitles.forEach(title => {
+      const option = document.createElement('option');
+      option.value = title;
+      option.textContent = title;
+      quizSelect.appendChild(option);
+    });
+
+    quizSelect.addEventListener('change', (e) => {
+      const selectedQuizTitle = e.target.value;
+      if (selectedQuizTitle) {
+        const selectedQuiz = Object.values(json).find(quiz => quiz['quiz-title'] === selectedQuizTitle);
+        console.log(selectedQuiz);
+      } else {
+        console.log("Error");
+      }
+    });
+  })
+  .catch(err => console.error('Error Fetching JSON: ', err));
