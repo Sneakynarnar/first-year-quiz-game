@@ -69,17 +69,8 @@ server.listen(port, () => {
 });
 
 io.on('connection', (socket) => {
-  const timers = {};
 
   console.log(`A ${socket.id} connected`);
-
-  const startTime = (roomId, questionIndex) => {
-    timers[roomId] = setTimeout(() => {
-      const correctOption = questions[roomId].questions[questionIndex].correct_ans;
-      io.emit('correctAnswer', { roomId, questionIndex, correctOption });
-      delete timers[roomId];
-    }, 10000);
-  };
 
   socket.on('createRoom', () => {
     const roomId = uuidv4(); // I would use a random number generator for this for a more readable room id
@@ -91,6 +82,11 @@ io.on('connection', (socket) => {
 
   socket.on('startQuiz', (roomId) => {
     io.to(roomId).emit('quizStarted', questions);
+    setTimeout(() => {
+      const questionIndex = 0;
+      const correctOption = questions['quiz-one'].questions[questionIndex].correct_ans;
+      io.to(roomId).emit('correctAnswer', { questionIndex , correctOption } );
+    }, 5000);
   });
 
   socket.on('getRooms', () => {
@@ -104,7 +100,6 @@ io.on('connection', (socket) => {
 
   socket.on('answer', ({ roomId, answer }) => {
     console.log(`Received answer from ${socket.id} in room ${roomId}: ${answer}`);
-    clearTimer();
   });
 
 

@@ -101,6 +101,10 @@ socket.on('message', (id, messageContent) => {
 socket.on('quizStarted', (questions) => {
   console.log('Quiz Started');
   displayFirstQuestion(questions);
+
+  setTimeout(() => {
+    console.log('Time is up');
+  }, 5000);
 })
 
 socket.on('userJoined', (userId) => {
@@ -152,31 +156,33 @@ socket.on('questionsList', (questions) => {
 });
 
 socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
-  const questionContainers = document.querySelectorAll('.question-container');
-  const currentQuestionContainer = questionContainers[questionIndex];
-  const options = currentQuestionContainer.querySelectorAll('li');
+  console.log(`Question ${questionIndex + 1}: Correct option is ${correctOption}`)
+  // const questionContainers = document.querySelectorAll('.question-container');
+  // const currentQuestionContainer = questionContainers[questionIndex];
+  // const options = currentQuestionContainer.querySelectorAll('li');
 
-  options.forEach((option, index) => {
-    if (index === correctOption) {
-      option.classList.add('correct-answer');
-    }
-  });
+  // options.forEach((option, index) => {
+  //   if (index === correctOption) {
+  //     option.classList.add('correct-answer');
+  //   }
+  // });
 });
 
-socket.on('wrongAnswer', ({ questionIndex, selectedOption, correctOption }) => {
-  const questionContainers = document.querySelectorAll('.question-container');
-  const currentQuestionContainer = questionContainers[questionIndex];
-  const options = currentQuestionContainer.querySelectorAll('li');
+// socket.on('wrongAnswer', ({ questionIndex, selectedOption, correctOption }) => {
+  
+//   const questionContainers = document.querySelectorAll('.question-container');
+//   const currentQuestionContainer = questionContainers[questionIndex];
+//   const options = currentQuestionContainer.querySelectorAll('li');
 
-  options.forEach((option, index) => {
-    if (index === selectedOption) {
-      option.classList.add('wrong-answer');
-    }
-    if (index === correctOption) {
-      option.classList.add('correct-answer');
-    }
-  });
-});
+//   options.forEach((option, index) => {
+//     if (index === selectedOption) {
+//       option.classList.add('wrong-answer');
+//     }
+//     if (index === correctOption) {
+//       option.classList.add('correct-answer');
+//     }
+//   });
+// });
 
 function sendMessage(message) {
   socket.emit('sendMessage', currentRoom, socket.id, message);
