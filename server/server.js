@@ -12,7 +12,7 @@ import Filter from 'bad-words';
 // Quiz Bank;
 const questions = JSON.parse(fs.readFileSync('./questions.json', 'utf8'));
 
-console.log(questions)
+console.log(questions);
 
 
 const filter = new Filter();
@@ -34,30 +34,55 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const activeRooms = new Map();
-
+app.post('/api/createquiz', (req, res) => {
+  const quiz = req.body;
+  console.log('Received quiz: ', quiz);
+  const [quizName, quizQuestions] = Object.entries(quiz)[0];
+  console.log('THESE ARE THE ENTRIES', Object.entries(quiz));
+  fs.readFile('./questions.json', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const questions = JSON.parse(data);
+    const quizId = uuidv4();
+    // console.log(quizName);
+    questions[quizId] = { 'quiz-title': quizName, 'questions': quizQuestions };
+    fs.writeFile('./questions.json', JSON.stringify(questions), (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      res.json({ id: quizId });
+    });
+  });
+});
 app.get('/play', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'play', 'index.html'));
 });
 
+app.get('/createquiz', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'createquiz', 'index.html'));
+});
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
 io.on('connection', (socket) => {
-  let timers = {};
+  const timers = {};
 
   console.log(`A ${socket.id} connected`);
 
   const startTime = (roomId, questionIndex) => {
     timers[roomId] = setTimeout(() => {
-      const correctOption  = questions[roomId].questions[questionIndex].correct_ans;
+      const correctOption = questions[roomId].questions[questionIndex].correct_ans;
       io.emit('correctAnswer', { roomId, questionIndex, correctOption });
       delete timers[roomId];
     }, 10000);
-  }
+  };
 
   socket.on('createRoom', () => {
-    const roomId = uuidv4();
+    const roomId = uuidv4(); // I would use a random number generator for this for a more readable room id
     socket.join(roomId);
     activeRooms.set(roomId, true);
     console.log(`Room ${roomId} created`);

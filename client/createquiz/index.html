@@ -1,0 +1,22 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script defer src="../lib/createquiz.js"></script>
+  <title>Create Quiz</title>
+</head>
+<body>
+  <header>
+    <label for="avatar">Download current quiz template:</label>
+    <input type="file" id="quiz-template-upload" name="Quiz template" accept=".json"/>
+    <button id="upload-quiz-template-button">Upload Quiz</button>
+    <h1>Create Quiz</h1>
+    <label for="quizname">Quiz Name</label>
+    <input type="text" id="quiz-title">
+  </header>
+  <button id="add-question-button">Add Question</button>
+  <div id="questioncontainer"></div>
+  <button id="submit-quiz-button">Submit Quiz</button>
+  <button id="download-quiz-template-button">Save Quiz</button>
+</body>
+</html>
