@@ -267,8 +267,7 @@
         "correct_ans": 2
       }
     ]
-  }
-{
+  },
   "quiz-three": {
     "quiz-title": "Core computing Concepts",
     "questions": [
@@ -277,16 +276,16 @@
         "options": [
           "A weakness, or flaw, in software, a system or process",
           "A type of malware or virus disguised as legitimate software",
-          "A network device which sends data packets from one network to another.          ",
-          "A breach of the security rules for a system or service.          "
+          "A network device which sends data packets from one network to another.",
+          "A breach of the security rules for a system or service."
         ],
-        "correct_ans": 1
+        "correct_ans": 0
       },
       {
         "question_title": "Which is the correct sequence?",
         "options": [
           "Review; Contain; Eradicate; Recover; Triage",
-          "Review; Recover; Eradicate; Contain; Triage          ",
+          "Review; Recover; Eradicate; Contain; Triage",
           "Triage; Contain; Eradicate; Recover; Review",
           "Triage; Recover; Contain; Eradicate; Review"
         ],
@@ -295,12 +294,12 @@
       {
         "question_title": "select one: ",
         "options": [
-          "Standard are specific and measurable          ",
-          "Standards primary focus on accessibility          ",
+          "Standard are specific and measurable",
+          "Standards primary focus on accessibility",
           "Standards are officially documented",
           "Standards promote best practice"
         ],
-        "correct_ans": 4
+        "correct_ans": 3
       },
       
       {
@@ -320,10 +319,10 @@
           "Checking an access control list",
           "Monitoring authorised access"
         ],
-        "correct_ans": 4
+        "correct_ans": 3
       },
       {
-        "question_title": "Which of the following are examples of 'thing a user has?        ",
+        "question_title": "Which of the following are examples of 'thing a user has?",
         "options": [
           "Username, password and security questions",
           "PIN number and Fingerprint",
@@ -336,15 +335,14 @@
         "options": [
           "Command line interfaces are an obsolete method of interacting with computers.",
           "It is possible to use a Command Line Interface within Microsoft Windows 11",
-          "Command line interfaces are powerful when used by expert users.          ",
+          "Command line interfaces are powerful when used by expert users.",
           "Command line interfaces require users to remember command parameters."
         ],
-        "correct_ans": 1
-      },
-      {
-     
+        "correct_ans": 0
+      }
+    ]
   },
-  "quiz-two", {
+  "quiz-four": {
     "quiz-title": "Networks",
     "questions": [
       {
@@ -353,14 +351,14 @@
           "Virtual circuit",
           "Connectionless",
           "Connection free",
-          "Connection oriented          "
+          "Connection oriented"
         ],
         "correct_ans": 2
       },
       {
         "question_title": "A protocol is a:        ",
         "options": [
-          "Reference Model          ",
+          "Reference Model",
           "set of rules for communications",
           "Packet header",
           "Symbol that indicates the start of a packet"
@@ -375,7 +373,7 @@
           "Virtual circuits",
           "Open systems"
         ],
-        "correct_ans": 4
+        "correct_ans": 3
       },
       {
         "question_title": "a packet is: ",
@@ -385,7 +383,7 @@
           "A protocol header",
           "An 8-bit byte (octet)"
         ],
-        "correct_ans": 1
+        "correct_ans": 0
       },
       {
         "question_title": " Which is an example of an IP address:",
@@ -395,7 +393,7 @@
           "net19,host12",
           "ox32-45-B8-OE-63"
         ],
-        "correct_ans": 2
+        "correct_ans": 1
       },
       {
         "question_title": " The data Link layer is subdivided into:",
@@ -406,50 +404,47 @@
           "None of the above"
         ],
         "correct_ans": 3
+      },
+      {
+        "question_title": " The X.25 standard defines:",
+        "options": [
+          "A packet assembler/disassembler protocol",
+          "An interface to a packet-switched network",
+          "A cell-replay approach to networking",
+          "A proprietary approach to internetworking"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": " In frame relay, if the user sends faster than the committed information rate within the excess information rate, the network will:",
+        "options": [
+          "Discard the data",
+          "Mark the data as being “Eligible for Discard",
+          "Delay sending the data with other packets",
+          "Combine the data with other packets"
+        ],
+        "correct_ans": 2
+      },
+      {
+        "question_title": " Communication between two completely different email systems may be performed by a:",
+        "options": [
+          "Router",
+          "Gateway",
+          "Gatekeeper",
+          "Bridge"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "Which is a wide area networking (WAN) protocol",
+        "options": [
+          "Ethernet",
+          "Token Ring",
+          "Apple talk",
+          "Frame relay"
+        ],
+        "correct_ans": 3
       }
     ]
   }
-  {
-    "question_title": " The X.25 standard defines:",
-    "options": [
-      "A packet assembler/disassembler protocol",
-      "An interface to a packet-switched network",
-      "A cell-replay approach to networking",
-      "A proprietary approach to internetworking"
-    ],
-    "correct_ans": 3
-  }
-  {
-    "question_title": " In frame relay, if the user sends faster than the committed information rate within the excess information rate, the network will:",
-    "options": [
-      "Discard the data",
-      "Mark the data as being “Eligible for Discard",
-      "Delay sending the data with other packets",
-      "Combine the data with other packets"
-    ],
-    "correct_ans": 2
-  }
-  {
-    "question_title": " Communication between two completely different email systems may be performed by a:",
-    "options": [
-      "Router",
-      "Gateway",
-      "Gatekeeper",
-      "Bridge"
-    ],
-    "correct_ans": 4
-  }
-  {
-    "question_title": "Which is a wide area networking (WAN) protocol",
-    "options": [
-      "Ethernet",
-      "Token Ring",
-      "Apple talk",
-      "Frame relay"
-    ],
-    "correct_ans": 4
-  }
-  
-}
-
 }
