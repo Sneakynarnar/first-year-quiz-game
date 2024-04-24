@@ -304,16 +304,16 @@
       },
       
       {
-        "question_title": "which unit is used to determine which unauth or illegitimate users are verified ?
-        "options": [
-          "False Acceptance Rate,
+        "question_title": "which unit is used to determine which unauth or illegitimate users are verified ?",
+        "options":[
+          "False Acceptance Rate",
           "False Rejection Rate",
           "Crossover Error Rate"
         ],
         "correct_ans": 0
       },
       {
-        "question_title": "Which of the following most concerns the act of authorising an entity?,
+        "question_title": "Which of the following most concerns the act of authorising an entity?",
         "options": [
           "Provision of a username",
           "Verifying a biometric measurement",
@@ -344,7 +344,7 @@
       {
      
   },
-  "quiz-two": {
+  "quiz-two", {
     "quiz-title": "Networks",
     "questions": [
       {
@@ -358,10 +358,10 @@
         "correct_ans": 2
       },
       {
-        "question_title": "A “protocol” is a:        ",
+        "question_title": "A protocol is a:        ",
         "options": [
           "Reference Model          ",
-          "Set of rules for	communications",
+          "set of rules for communications",
           "Packet header",
           "Symbol that indicates the start of a packet"
         ],
@@ -378,10 +378,10 @@
         "correct_ans": 4
       },
       {
-        "A packet is:",
+        "question_title": "a packet is: ",
         "options": [
-          "A unit of data that is sent 	using given protocol",
-          "A symbol that indicates the 	beginning of a submission",
+          "a unit of data that is sent using a given protocol",
+          "a symbol that represents the beginning of a submission",
           "A protocol header",
           "An 8-bit byte (octet)"
         ],
