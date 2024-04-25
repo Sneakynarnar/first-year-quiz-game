@@ -155,6 +155,26 @@ socket.on('questionsList', (questions) => {
   displayFirstQuestion(questions);
 });
 
+socket.on('question', (question) => {
+  displayQuestion(question);
+});
+
+function displayQuestion(question) {
+  const questionContainer = document.querySelector('#questionContainer');
+  questionContainer.innerHTML = `<h2>${question.question_title}</h2>`;
+  
+  const optionsListElement = document.createElement('ul');
+  question.options.forEach((option) => {
+    const optionItem = document.createElement('li');
+    optionItem.textContent = option;
+    optionItem.addEventListener('click', () => {
+      socket.emit('answer', { roomId: currentRoom, answer: option });
+    });
+    optionsListElement.appendChild(optionItem);
+  });
+  questionContainer.appendChild(optionsListElement);
+}
+
 socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
   console.log(`Question ${questionIndex + 1}: Correct option is ${correctOption}`)
   // const questionContainers = document.querySelectorAll('.question-container');

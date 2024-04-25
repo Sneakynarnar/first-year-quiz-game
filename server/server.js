@@ -81,12 +81,20 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startQuiz', (roomId) => {
-    io.to(roomId).emit('quizStarted', questions);
-    setTimeout(() => {
-      const questionIndex = 0;
-      const correctOption = questions['quiz-one'].questions[questionIndex].correct_ans;
-      io.to(roomId).emit('correctAnswer', { questionIndex , correctOption } );
-    }, 5000);
+    const questionsList = questions['quiz-one'].questions;
+    let questionIndex = 0;
+  
+    const sendQuestion = () => {
+      const question = questionsList[questionIndex];
+      io.to(roomId).emit('question', question);
+      questionIndex++;
+  
+      if (questionIndex < questionsList.length) {
+        setTimeout(sendQuestion, 5000); // Adjust the delay as needed
+      }
+    };
+  
+    sendQuestion(); // Start sending questions
   });
 
   socket.on('getRooms', () => {
