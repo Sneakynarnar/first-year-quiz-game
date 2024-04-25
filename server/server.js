@@ -8,26 +8,25 @@ import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import fs from 'fs';
 import Filter from 'bad-words';
-
+import { login, register } from './accounts.mjs';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Quiz Bank;
-const questions = JSON.parse(fs.readFileSync('./questions.json', 'utf8'));
-
+const questions = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, '..', 'server', 'questions.json'),
+    'utf8'
+  )
+);
 console.log(questions);
-
-
 const filter = new Filter();
-
 dotenv.config();
-
 const app = express();
 const port = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Serve static files from the 'client' directory
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, '..', 'client')));
 
 const server = http.createServer(app);
@@ -47,7 +46,7 @@ app.post('/api/createquiz', (req, res) => {
     const questions = JSON.parse(data);
     const quizId = uuidv4();
     // console.log(quizName);
-    questions[quizId] = { 'quiz-title': quizName, 'questions': quizQuestions };
+    questions[quizId] = { 'quiz-title': quizName, questions: quizQuestions };
     fs.writeFile('./questions.json', JSON.stringify(questions), (err) => {
       if (err) {
         console.error(err);
@@ -57,6 +56,24 @@ app.post('/api/createquiz', (req, res) => {
     });
   });
 });
+
+app.post('/api/login', (req, res) => {
+  const { username, password } = req.body;
+  login(res, username, password);
+});
+
+app.post('/api/register', (req, res) => {
+  const { username, password } = req.body;
+  register(res, username, password);
+});
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'login', 'index.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'src', 'register', 'index.html'));
+});
+
 app.get('/play', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'play', 'index.html'));
 });
@@ -69,7 +86,6 @@ server.listen(port, () => {
 });
 
 io.on('connection', (socket) => {
-
   console.log(`A ${socket.id} connected`);
 
   socket.on('createRoom', () => {
@@ -83,17 +99,16 @@ io.on('connection', (socket) => {
   socket.on('startQuiz', (roomId) => {
     const questionsList = questions['quiz-one'].questions;
     let questionIndex = 0;
-  
+
     const sendQuestion = () => {
       const question = questionsList[questionIndex];
       io.to(roomId).emit('question', question);
       questionIndex++;
-  
+
       if (questionIndex < questionsList.length) {
         setTimeout(sendQuestion, 5000); // Adjust the delay as needed
       }
     };
-  
     sendQuestion(); // Start sending questions
   });
 
@@ -107,9 +122,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('answer', ({ roomId, answer }) => {
-    console.log(`Received answer from ${socket.id} in room ${roomId}: ${answer}`);
+    console.log(
+      `Received answer from ${socket.id} in room ${roomId}: ${answer}`
+    );
   });
-
 
   socket.on('joinRoom', (roomId) => {
     if (activeRooms.has(roomId)) {
@@ -123,7 +139,7 @@ io.on('connection', (socket) => {
 
   socket.on('quitRoom', () => {
     const rooms = Object.keys(socket.rooms);
-    const roomId = rooms.find(roomId => roomId !== socket.id);
+    const roomId = rooms.find((roomId) => roomId !== socket.id);
     if (roomId && activeRooms.has(roomId)) {
       activeRooms.delete(roomId);
       console.log(`Room ${roomId} has been deleted`);
