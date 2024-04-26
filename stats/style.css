@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+
+  .stats {
+    list-style: none;
+    padding: 0;
+  }
+
+  .stats li {
+    margin-bottom: 15px;
+  }
+
+  .stats li span {
+    font-weight: bold;
+    color: #555;
+  }
+
+  .highlight {
+    font-weight: bold;
+    color: #007bff;
+  }
