@@ -7,18 +7,19 @@ import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import fs from 'fs';
-import Filter from 'bad-words';
+
 import { login, register } from './accounts.mjs';
+import * as rooms from './sockets.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Quiz Bank;
 const questions = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, '..', 'server', 'questions.json'),
-    'utf8'
-  )
+    'utf8',
+  ),
 );
 console.log(questions);
-const filter = new Filter();
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,41 +33,41 @@ app.use(express.static(path.join(__dirname, '..', 'client')));
 const server = http.createServer(app);
 const io = new Server(server);
 
-const activeRooms = new Map();
+
 app.post('/api/createquiz', (req, res) => {
-  const quiz = req.body;
+  const quiz = req.body; // The quiz object should be in the format { 'quiz-name': { 'question': 'answer' } }
   console.log('Received quiz: ', quiz);
-  const [quizName, quizQuestions] = Object.entries(quiz)[0];
+  const [quizName, quizQuestions] = Object.entries(quiz)[0]; // Destructure the quiz object
   console.log('THESE ARE THE ENTRIES', Object.entries(quiz));
-  fs.readFile('./questions.json', (err, data) => {
+  fs.readFile('./questions.json', (err, data) => { //
     if (err) {
       console.error(err);
       return;
     }
-    const questions = JSON.parse(data);
-    const quizId = uuidv4();
+    const questions = JSON.parse(data); //
+    const quizId = uuidv4(); // Generate a unique ID for the quiz
     // console.log(quizName);
-    questions[quizId] = { 'quiz-title': quizName, questions: quizQuestions };
+    questions[quizId] = { 'quiz-title': quizName, 'questions': quizQuestions }; //
     fs.writeFile('./questions.json', JSON.stringify(questions), (err) => {
       if (err) {
         console.error(err);
         return;
       }
-      res.json({ id: quizId });
+      res.json({ id: quizId }); // Send the quiz ID back to the client
     });
   });
 });
 
 app.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-  login(res, username, password);
+  const { username, password } = req.body; // Destructure the username and password from the request body
+  login(res, username, password); // Call the login function from accounts.mjs
 });
 
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
-  register(res, username, password);
+  register(res, username, password); // Call the register function from accounts.mjs
 });
-app.get('/login', (req, res) => {
+app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'login', 'index.html'));
 });
 
@@ -85,80 +86,42 @@ server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-io.on('connection', (socket) => {
+io.on('connection', (socket) => { // socket event listeners
   console.log(`A ${socket.id} connected`);
 
   socket.on('createRoom', () => {
-    const roomId = uuidv4(); // I would use a random number generator for this for a more readable room id
-    socket.join(roomId);
-    activeRooms.set(roomId, true);
-    console.log(`Room ${roomId} created`);
-    io.to(roomId).emit('roomCreated', roomId);
+    rooms.createRoom(socket, io);
   });
 
   socket.on('startQuiz', (roomId) => {
-    const questionsList = questions['quiz-one'].questions;
-    let questionIndex = 0;
-
-    const sendQuestion = () => {
-      const question = questionsList[questionIndex];
-      io.to(roomId).emit('question', question);
-      questionIndex++;
-
-      if (questionIndex < questionsList.length) {
-        setTimeout(sendQuestion, 5000); // Adjust the delay as needed
-      }
-    };
-    sendQuestion(); // Start sending questions
+    rooms.startQuiz(io, roomId, questions);
   });
 
   socket.on('getRooms', () => {
-    console.log('Client requested room list');
-    socket.emit('roomsList', Array.from(activeRooms.keys()));
+    rooms.getRooms(socket);
   });
 
   socket.on('getQuestions', () => {
-    socket.emit('questionsList', questions);
+    rooms.getQuestions(socket, questions);
   });
 
   socket.on('answer', ({ roomId, answer }) => {
-    console.log(
-      `Received answer from ${socket.id} in room ${roomId}: ${answer}`
-    );
+    rooms.answer(socket, roomId, answer);
   });
 
   socket.on('joinRoom', (roomId) => {
-    if (activeRooms.has(roomId)) {
-      socket.join(roomId);
-      console.log(`${socket.id} joined room ${roomId}`);
-      io.to(roomId).emit('userJoined', socket.id);
-    } else {
-      socket.emit('roomError', 'Invalid Room ID');
-    }
+    rooms.joinRoom(socket, roomId, io);
   });
 
   socket.on('quitRoom', () => {
-    const rooms = Object.keys(socket.rooms);
-    const roomId = rooms.find((roomId) => roomId !== socket.id);
-    if (roomId && activeRooms.has(roomId)) {
-      activeRooms.delete(roomId);
-      console.log(`Room ${roomId} has been deleted`);
-      io.emit('roomDeleted', roomId);
-    }
+    rooms.quitRoom(socket, io);
   });
 
   socket.on('sendMessage', (roomId, studentId, messageContent) => {
-    if (activeRooms.has(roomId)) {
-      console.log(messageContent);
-      const cleanMessage = filter.clean(messageContent);
-      io.to(roomId).emit('message', studentId, cleanMessage);
-    } else {
-      socket.emit('roomError', 'Invalid Room ID');
-    }
+    rooms.sendMessage(socket, roomId, studentId, messageContent, io);
   });
 
   socket.on('disconnect', () => {
-    console.log(`User ${socket.id} disconnected`);
-    io.emit('userLeft', socket.id);
+    rooms.disconnect(socket, io);
   });
 });
