@@ -8,10 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import fs from 'fs';
 
-import { login, register } from './accounts.mjs';
-import * as rooms from './sockets.mjs';
+import { createQuiz } from './modules/quizes.mjs';
+import { login, register } from './modules/accounts.mjs';
+import * as rooms from './modules/sockets.mjs';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Get the directory name of the current module
 // Quiz Bank;
 const questions = JSON.parse(
   fs.readFileSync(
@@ -20,68 +21,28 @@ const questions = JSON.parse(
   ),
 );
 console.log(questions);
-dotenv.config();
-const app = express();
-const port = process.env.PORT || 3000;
+dotenv.config(); // Load the environment variables
+const app = express(); 
+const port = process.env.PORT || 3000; // Set the port to the environment variable PORT or 3000
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// Serve static files from the 'client' directory
-app.use(express.static(path.join(__dirname, '..', 'client')));
+app.use(express.json()); // Parse JSON bodies MIDDLEWARE
+app.use(express.static(path.join(__dirname, '..', 'public'))); // Serve the public directory
 
 const server = http.createServer(app);
 const io = new Server(server);
 
 
-app.post('/api/createquiz', (req, res) => {
-  const quiz = req.body; // The quiz object should be in the format { 'quiz-name': { 'question': 'answer' } }
-  console.log('Received quiz: ', quiz);
-  const [quizName, quizQuestions] = Object.entries(quiz)[0]; // Destructure the quiz object
-  console.log('THESE ARE THE ENTRIES', Object.entries(quiz));
-  fs.readFile('./questions.json', (err, data) => { //
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const questions = JSON.parse(data); //
-    const quizId = uuidv4(); // Generate a unique ID for the quiz
-    // console.log(quizName);
-    questions[quizId] = { 'quiz-title': quizName, 'questions': quizQuestions }; //
-    fs.writeFile('./questions.json', JSON.stringify(questions), (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      res.json({ id: quizId }); // Send the quiz ID back to the client
-    });
-  });
-});
-
+app.post('/api/createquiz', createQuiz);
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body; // Destructure the username and password from the request body
   login(res, username, password); // Call the login function from accounts.mjs
 });
-
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
   register(res, username, password); // Call the register function from accounts.mjs
 });
-app.get('/home', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'login', 'index.html'));
-});
 
-app.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'register', 'index.html'));
-});
-
-app.get('/play', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'play', 'index.html'));
-});
-
-app.get('/createquiz', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src', 'createquiz', 'index.html'));
-});
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

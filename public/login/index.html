@@ -1,0 +1,20 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script defer src="login.mjs"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <h1>Login</h1>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required> <!-- in production we would use oauth -->
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <button id="submitlogin">Login</button>
+      <p>Haven't got an account yet? <a href="http://localhost:3000/register">Click here to register!</a></p>
+  </div>
+</body>
+
+</html>

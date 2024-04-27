@@ -13,11 +13,11 @@ const connect = init();
 
 async function initDataBase() {
   const db = await connect;
-  await db.run('DROP TABLE IF EXISTS Accounts;');
+  await db.run('DROP TABLE IF EXISTS Accounts;');// VERY INSECURE, ONLY FOR DEMO PURPOSES, USE ENCRYPTION / OAUTH IN PRODUCTION
   await db.run(`
     CREATE TABLE Accounts (
       accountName char(25) NOT NULL,
-      accountPassword char(25) NOT NULL,  // VERY INSECURE, ONLY FOR DEMO PURPOSES, USE ENCRYPTION / OAUTH IN PRODUCTION
+      accountPassword char(25) NOT NULL,  
       PRIMARY KEY (accountName)
     );
   `);
@@ -31,7 +31,7 @@ async function initDataBase() {
     CREATE TABLE friends (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user1 TEXT NOT NULL,
-      user2 TEXT NOT NULL
+      user2 TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
