@@ -9,7 +9,7 @@ import cors from 'cors';
 import fs from 'fs';
 
 import { createQuiz } from './modules/quizes.mjs';
-import { login, register } from './modules/accounts.mjs';
+import * as accounts from './modules/accounts.mjs';
 import * as rooms from './modules/sockets.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Get the directory name of the current module
@@ -22,7 +22,7 @@ const questions = JSON.parse(
 );
 console.log(questions);
 dotenv.config(); // Load the environment variables
-const app = express(); 
+const app = express();
 const port = process.env.PORT || 3000; // Set the port to the environment variable PORT or 3000
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -34,15 +34,44 @@ const io = new Server(server);
 
 const socketToUser = new Map();
 
-
 app.post('/api/createquiz', createQuiz);
+app.post('/api/friendrequest', (req, res) => {
+  const [from, to] = req.body;
+  accounts.sendFriendRequest(res, from, to);
+});
+app.post('/api/acceptfriendrequest', (req, res) => {
+  const [from, to] = req.body;
+  accounts.acceptFriendRequest(res, from, to);
+});
+app.post('/api/ignorefriendrequest', (req, res) => {
+  const [from, to] = req.body;
+  accounts.ignoreFriendRequest(res, from, to);
+});
+app.post('/api/removefriend', (req, res) => {
+  const [from, to] = req.body;
+  accounts.removeFriend(res, from, to);
+});
+app.post('/api/friends', (req, res) => {
+  const username = req.body;
+  accounts.getFriends(res, username);
+});
+app.post('/api/friendrequests', (req, res) => {
+  const username = req.body;
+  accounts.getFriendRequests(res, username);
+});
+app.post('/api/leaderboard', (req, res) => {
+  accounts.getLeaderboard(res);
+});
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body; // Destructure the username and password from the request body
-  login(res, username, password); // Call the login function from accounts.mjs
+  accounts.login(res, username, password); // Call the login function from accounts.mjs
 });
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
-  register(res, username, password); // Call the register function from accounts.mjs
+  accounts.register(res, username, password); // Call the register function from accounts.mjs
+});
+app.post('/api/activeusers', (req, res) => {
+  res.json(Array.from(socketToUser.values()));
 });
 
 server.listen(port, () => {
