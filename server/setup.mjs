@@ -17,7 +17,7 @@ async function initDataBase() {
   await db.run(`
     CREATE TABLE Accounts (
       accountName char(25) NOT NULL,
-      accountPassword char(25) NOT NULL,
+      accountPassword char(25) NOT NULL,  // VERY INSECURE, ONLY FOR DEMO PURPOSES, USE ENCRYPTION / OAUTH IN PRODUCTION
       PRIMARY KEY (accountName)
     );
   `);
@@ -32,9 +32,10 @@ async function initDataBase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user1 TEXT NOT NULL,
       user2 TEXT NOT NULL
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
-  // VERY INSECURE, ONLY FOR DEMO PURPOSES, USE ENCRYPTION / OAUTH IN PRODUCTION
+ 
   console.log('Database set up!');
 }
 
