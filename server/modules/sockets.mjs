@@ -3,7 +3,7 @@
 import Filter from 'bad-words';
 const filter = new Filter();
 const activeRooms = new Map();
-
+const roomMembers = {};
 export function createRoom(socket, io) {
   let roomId = Math.floor(Math.random() * 900000) + 100000;
   socket.join(roomId);
@@ -50,11 +50,16 @@ export function answer(socket, roomId, answer) {
   );
 }
 
-export function joinRoom(socket, roomId, io) {
+export function joinRoom(socket, roomId, io, username) {
+  if (roomMembers[roomId].users.indexOf(username) === -1) {
+    socket.emit('roomError', 'User already in room');
+    return;
+  }
   if (activeRooms.has(roomId)) {
     socket.join(roomId);
-    console.log(`${socket.id} joined room ${roomId}`);
-    io.to(roomId).emit('userJoined', socket.id);
+    console.log(`${username} joined room ${roomId}`);
+    io.to(roomId).emit('userJoined', username);
+    roomMembers[roomId].users.push(username);
   } else {
     socket.emit('roomError', 'Invalid Room ID');
   }
@@ -70,17 +75,18 @@ export function quitRoom(socket, io) {
   }
 }
 
-export function sendMessage(socket, roomId, studentId, messageContent, io) {
+export function sendMessage(socket, roomId, messageContent, io, username) {
   if (activeRooms.has(roomId)) {
     console.log(messageContent);
     const cleanMessage = filter.clean(messageContent);
-    io.to(roomId).emit('message', studentId, cleanMessage);
+    console.log('usernames', username, 'message', cleanMessage, 'room', roomId);
+    io.to(roomId).emit('message', username, cleanMessage);
   } else {
     socket.emit('roomError', 'Invalid Room ID');
   }
 }
 
-export function disconnect(socket, io) {
-  console.log(`User ${socket.id} disconnected`);
-  io.emit('userLeft', socket.id);
+export function disconnect(username, io) {
+  console.log(`User ${username} disconnected`);
+  io.emit('userLeft', username);
 }

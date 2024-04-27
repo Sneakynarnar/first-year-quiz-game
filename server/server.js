@@ -32,6 +32,8 @@ app.use(express.static(path.join(__dirname, '..', 'public'))); // Serve the publ
 const server = http.createServer(app);
 const io = new Server(server);
 
+const socketToUser = new Map();
+
 
 app.post('/api/createquiz', createQuiz);
 app.post('/api/login', (req, res) => {
@@ -49,7 +51,14 @@ server.listen(port, () => {
 
 io.on('connection', (socket) => { // socket event listeners
   console.log(`A ${socket.id} connected`);
-
+  const username = socket.handshake.query.username;
+  console.log(socket.handshake.query);
+  if (username) {
+    socketToUser.set(socket.id, username);
+  } else {
+    socket.disconnect(true); // we disconnect if we dont get a username
+  }
+  console.log(socketToUser);
   socket.on('createRoom', () => {
     rooms.createRoom(socket, io);
   });
@@ -71,18 +80,19 @@ io.on('connection', (socket) => { // socket event listeners
   });
 
   socket.on('joinRoom', (roomId) => {
-    rooms.joinRoom(socket, roomId, io);
+    rooms.joinRoom(socket, roomId, io, socketToUser.get(socket.id));
   });
 
   socket.on('quitRoom', () => {
     rooms.quitRoom(socket, io);
   });
 
-  socket.on('sendMessage', (roomId, studentId, messageContent) => {
-    rooms.sendMessage(socket, roomId, studentId, messageContent, io);
+  socket.on('sendMessage', (roomId, messageContent) => {
+    rooms.sendMessage(socket, roomId, messageContent, io, socketToUser.get(socket.id));
   });
 
   socket.on('disconnect', () => {
     rooms.disconnect(socket, io);
+    socketToUser.delete(socket.id);
   });
 });
