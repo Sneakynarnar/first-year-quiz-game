@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "setup": "node server/setup.mjs",
-    "tailwind": "npx tailwindcss -i client/src/input.css -o client/src/output.css --watch",
+    "setup": "node server/modules/setup.mjs",
+    "tw": "npx tailwindcss -i public/src/input.css -o public/src/output.css --watch",
     "lint": "npx eslint"
   },
   "author": "",
