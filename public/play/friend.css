@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.container {
+    max-width: 200px;
+    margin: 50px auto;
+    left: 1600px;
+    position: absolute;
+}
+h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+.friends-list {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.friend {
+    margin-bottom: 5px;
+}
+.friend.online {
+    color: green;
+}
+.friend.offline {
+    color: red;
+}
+label {
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: block;
+}
