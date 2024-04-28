@@ -88,7 +88,7 @@ io.on('connection', (socket) => { // socket event listeners
   }
   console.log(socketToUser);
   socket.on('createRoom', () => {
-    rooms.createRoom(socket, io);
+    rooms.createRoom(socket, io, socketToUser.get(socket.id));
   });
 
   socket.on('startQuiz', (roomId) => {

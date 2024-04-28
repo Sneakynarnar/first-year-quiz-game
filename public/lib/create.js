@@ -59,12 +59,12 @@ socket.on('roomsList', (rooms) => {
     const joinButton = document.createElement('button');
     joinButton.textContent = 'Join';
     joinButton.classList.add('joinRoom');
-
     roomItem.addEventListener('click', (event) => {
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);
         currentRoom = roomId;
         console.log('Joining Room: ', roomId);
+        hideSection(optionSection);
       }
     });
 
@@ -124,18 +124,33 @@ socket.on('quizStarted', (questions) => {
   }, 5000);
 });
 
-socket.on('userJoined', (userId) => {
+socket.on('userJoined', (userId, users) => {
   const userItems = document.querySelectorAll('.user-list li');
   const tabListItem = document.createElement('li');
   const userItem = document.createElement('li');
   const chatList = document.querySelector('#chatText');
   const message = `<b class="text-green-500">${getCurrentTime()} ${userId} joined the room</b> `;
   tabListItem.textContent = userId;
-  userList.appendChild(tabListItem);
   userItem.innerHTML = message;
+  const currentRoomUsers = [userId + ' (YOU)'];
   console.log(message);
+  users = [userId, ...users];
+  for (const item of userItems) {
+    currentRoomUsers.push(item.textContent);
+  }
+  for (let user of users) {
+    console.log('User: ', user);
+    if (user === accountId) {
+      user = user + ' (YOU)';
+    }
+    if (currentRoomUsers.includes(user)) {
+      return;
+    }
+    const userListItem = document.createElement('li');
+    userListItem.textContent = user;
+    userList.appendChild(userListItem);
+  }
   chatList.appendChild(userItem);
-  userItems.appendChild(tabListItem);
   console.log('User Joined: ', userId);
 });
 
@@ -252,7 +267,7 @@ function displayFirstQuestion(questions) {
   const firstQuizQuestions = questions['quiz-one'].questions;
 
   if (isTeacher) {
-    console.log('im a teacher');
+    console.log("I'm a host");
     const questionTitleElement = document.createElement('h2');
     questionTitleElement.textContent = firstQuizQuestions[0].question_title;
     const questionContainer = document.querySelector('#questionContainer');
@@ -261,7 +276,7 @@ function displayFirstQuestion(questions) {
   }
 
   if (!isTeacher) {
-    console.log('im not a teacher');
+    console.log("I'm a student");
     const optionsList = firstQuizQuestions[0].options;
     const optionsListElement = document.createElement('ul');
 

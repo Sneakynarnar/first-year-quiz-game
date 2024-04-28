@@ -6,7 +6,7 @@ const activeRooms = new Map();
 const roomMembers = {};
 
 
-export function createRoom(socket, io) {
+export function createRoom(socket, io, username) {
   let roomId = Math.floor(Math.random() * 900000) + 100000;
   while (activeRooms.has(roomId)) {
     roomId = Math.floor(Math.random() * 900000) + 100000; // Generate a new room ID until it is unique
@@ -14,7 +14,8 @@ export function createRoom(socket, io) {
   }
   activeRooms.set(roomId, true);
   socket.join(roomId);
-  roomMembers[roomId] = { users: [] };
+  roomMembers[roomId] = { users: [username] };
+
   console.log(`Room ${roomId} created`);
   io.to(roomId).emit('roomCreated', roomId);
 }
@@ -74,8 +75,9 @@ export function joinRoom(socket, roomId, io, username) {
   if (activeRooms.has(roomId)) {
     socket.join(roomId);
     console.log(`${username} joined room ${roomId}`);
-    io.to(roomId).emit('userJoined', username);
+    io.to(roomId).emit('userJoined', username, roomMembers[roomId].users);
     roomMembers[roomId].users.push(username);
+    console.log('Room members:', roomMembers[roomId].users);
   } else {
     socket.emit('roomError', 'Invalid Room ID');
   }
