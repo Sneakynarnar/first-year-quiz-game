@@ -8,11 +8,11 @@ const roomMembers = {};
 
 export function createRoom(socket, io) {
   let roomId = Math.floor(Math.random() * 900000) + 100000;
-  activeRooms.set(roomId, true);
   while (activeRooms.has(roomId)) {
     roomId = Math.floor(Math.random() * 900000) + 100000; // Generate a new room ID until it is unique
     // not using uuidv4 here because it generates a long string that is not user-friendly.
   }
+  activeRooms.set(roomId, true);
   socket.join(roomId);
   roomMembers[roomId] = { users: [] };
   console.log(`Room ${roomId} created`);
@@ -40,6 +40,7 @@ export function startQuiz(io, roomId, questions) {
 
 export function getRooms(socket) {
   console.log('Client requested room list');
+  console.log('Active rooms:', activeRooms);
   socket.emit('roomsList', Array.from(activeRooms.keys()));
 }
 
@@ -55,7 +56,6 @@ export function answer(socket, roomId, answer) {
 
 export function joinRoom(socket, roomId, io, username) {
   console.log('Joining room with ID', roomId, 'and username', username);
-  
   if (roomMembers[roomId] === undefined && activeRooms.has(roomId)) {
     roomMembers[roomId] = { users: [] };
     console.log('Room members initialized for room', roomId);
