@@ -30,10 +30,10 @@ async function initDataBase() {
     ('sneaky', 'sneaky'),
     ('ashe', 'ashe'),
     ('jess', 'jess'),
-    ('lars', 'lars')
-    ('redjive', 'redjive')
-    ('nord', 'nord')
-    ('zod', 'zod')
+    ('lars', 'lars'),
+    ('redjive', 'redjive'),
+    ('nord', 'nord'),
+    ('zod', 'zod'),
     ('user', 'user');
   `);
   await db.run('DROP TABLE IF EXISTS friends');

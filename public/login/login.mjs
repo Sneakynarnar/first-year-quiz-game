@@ -20,7 +20,7 @@ function main() {
     });
     console.log('Response:', response);
     if (response.ok) {
-      window.location.href = `http://localhost:3000?accountId=${logininfo.username}`;
+      window.location.href = `http://localhost:3000?user=${logininfo.username}`;
     }
   });
 }
