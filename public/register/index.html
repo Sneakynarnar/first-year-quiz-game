@@ -1,21 +1,51 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script defer src="register.mjs"></script>
-  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>Login</title>
 </head>
-<body>
-  <div>
-    <h1>Login</h1>
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required> <!-- in production we would use oauth -->
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required>
-      <label for="confirm-password">Confirm Password:</label>
-      <input type="password" id="confirm-password" name="password" required>
-      <button id="submitlogin">Login</button>
-      <p>Haven't got an account yet? <a href="http://localhost:3000/">Click here to login!</a></p>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <div class="max-w-xs bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <h1 class="text-4xl font-medium text-gray-800 text-center">Create Account</h1>
+    <form class="mt-8" id="loginForm">
+      <div class="mb-4">
+        <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+        <input type="text" id="username" name="username"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          required
+          placeholder="Enter your username" required>
+          
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+        <input type="password" id="password" name="password"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+          required
+          placeholder="Enter your password" required>
+      </div>
+      <div class="mb-6">
+        <label for="confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Confirm Password:</label>
+        <input type="password" id="confirm-password" name="confirm-password"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+          required
+          placeholder="Confirm your password" required>
+      </div>
+      <div class="flex items-center justify-between">
+        <button type="submit"
+          class="bg-blue-500 hover:bg-blue-700 rounded w-full text-white font-bold py-2 px-4 mx-2 rounded focus:outline-none focus:shadow-outline">
+          Register
+      
+        </button>
+      </div>
+    </form>
+    <p class="mt-4 text-center">Already have an account? <a href="http://localhost:3000/"
+        class="text-blue-500"><br>Click here to login!</a></p>
   </div>
 </body>
+
 </html>
