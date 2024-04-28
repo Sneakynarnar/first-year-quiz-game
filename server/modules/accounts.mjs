@@ -33,8 +33,6 @@ export async function register(res, username, password) {
     'INSERT INTO Accounts (accountName, accountPassword) VALUES (?, ?)',
     [username, password],
   );
-  await db.commit();
-  await db.close();
   res.status(200).json('Registration successful');
   // TODO: Add error handling for duplicate usernames / special characters
 }
