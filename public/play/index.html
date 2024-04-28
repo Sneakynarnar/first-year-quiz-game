@@ -29,6 +29,7 @@
             </div>
             <nav :class="{'flex': open, 'hidden': !open}"
                 class="flex-col flex-grow hidden pb-4 md:pb-0 md:flex md:justify-end md:flex-row">
+                <a class=""
                 <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
                     href="../">Home</a>
                 <a class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
@@ -43,16 +44,36 @@
 
 <body>
 
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend System</title>
+
+    </head>
+    <body>
+    
     <div class="container">
         <h2>Online Friends</h2>
         <div id="onlineFriends" class="friends-list">
-            <!-- Online friends will be displayed here -->
         </div>
     
         <h2>Offline Friends</h2>
         <div id="offlineFriends" class="friends-list">
-            <!-- Offline friends will be displayed here -->
         </div>
+    
+        <label for="friendId">Friend's User ID:</label>
+        <input type="text" id="friendId" name="friendId" required>
+        <button onclick="addFriend()">Add Friend</button>
+        <button onclick="removeFriend()">Remove Friend</button>
+        <p id="resultMessage"></p>
+    </div>
+    
+    
+    </body>
+    </html>
+    
     
     </div>
     
