@@ -1,4 +1,15 @@
-const socket = io();
+
+const urlParams = new URLSearchParams(window.location.search);
+const accountId = urlParams.get('user');
+console.log(accountId);
+if (!accountId) {
+  window.location.href = 'http://localhost:3000/login';
+}
+const socket = io({
+  query: {
+    username: accountId,
+  },
+});
 
 // Buttons
 const btnCreate = document.querySelector('#createRoom');
@@ -53,6 +64,7 @@ socket.on('roomsList', (rooms) => {
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);
         currentRoom = roomId;
+        console.log('Joining Room: ', roomId);
       }
     });
 
@@ -74,7 +86,7 @@ btnRooms.addEventListener('click', () => {
 });
 
 btnStart.addEventListener('click', () => {
-  socket.emit('startQuiz', currentRoom)
+  socket.emit('startQuiz', currentRoom);
   if (isTeacher && !questionsLoaded) {
     socket.emit('getQuestions');
   }
@@ -105,11 +117,13 @@ socket.on('quizStarted', (questions) => {
   setTimeout(() => {
     console.log('Time is up');
   }, 5000);
-})
+});
 
 socket.on('userJoined', (userId) => {
   const userItem = document.createElement('li');
   userItem.textContent = `User ID: ${userId} joined the room`;
+  console.log('User Joined: ', userId);
+  
   userList.appendChild(userItem);
 });
 
@@ -144,13 +158,12 @@ document.querySelector('#chat').addEventListener('submit', (event) => {
 
   if (messageContent !== '') {
     sendMessage(messageContent);
-
     messageInput.value = '';
   }
 });
 
 socket.on('questionsList', (questions) => {
-  console.log('recieved questions', questions)
+  console.log('recieved questions', questions);
   questionsLoaded = true; // Set questions loaded to true
   displayFirstQuestion(questions);
 });
@@ -162,7 +175,6 @@ socket.on('question', (question) => {
 function displayQuestion(question) {
   const questionContainer = document.querySelector('#questionContainer');
   questionContainer.innerHTML = `<h2>${question.question_title}</h2>`;
-  
   const optionsListElement = document.createElement('ul');
   question.options.forEach((option) => {
     const optionItem = document.createElement('li');
@@ -205,7 +217,7 @@ socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
 // });
 
 function sendMessage(message) {
-  socket.emit('sendMessage', currentRoom, socket.id, message);
+  socket.emit('sendMessage', currentRoom, message);
 }
 
 function getCurrentTime() {

@@ -4,14 +4,17 @@ import Filter from 'bad-words';
 const filter = new Filter();
 const activeRooms = new Map();
 const roomMembers = {};
+
+
 export function createRoom(socket, io) {
   let roomId = Math.floor(Math.random() * 900000) + 100000;
-  socket.join(roomId);
   while (activeRooms.has(roomId)) {
     roomId = Math.floor(Math.random() * 900000) + 100000; // Generate a new room ID until it is unique
     // not using uuidv4 here because it generates a long string that is not user-friendly.
   }
   activeRooms.set(roomId, true);
+  socket.join(roomId);
+  roomMembers[roomId] = { users: [] };
   console.log(`Room ${roomId} created`);
   io.to(roomId).emit('roomCreated', roomId);
 }
@@ -37,6 +40,7 @@ export function startQuiz(io, roomId, questions) {
 
 export function getRooms(socket) {
   console.log('Client requested room list');
+  console.log('Active rooms:', activeRooms);
   socket.emit('roomsList', Array.from(activeRooms.keys()));
 }
 
@@ -51,8 +55,20 @@ export function answer(socket, roomId, answer) {
 }
 
 export function joinRoom(socket, roomId, io, username) {
-  if (roomMembers[roomId].users.indexOf(username) === -1) {
+  console.log('Joining room with ID', roomId, 'and username', username);
+  if (roomMembers[roomId] === undefined && activeRooms.has(roomId)) {
+    roomMembers[roomId] = { users: [] };
+    console.log('Room members initialized for room', roomId);
+  }
+  if (activeRooms.has(roomId) === false) {
+    socket.emit('roomError', 'Invalid Room ID');
+    console.log('Invalid Room ID provided by user'); // Log the error
+    return;
+  }
+  console.log(roomMembers[roomId].users, 'users in room');
+  if (roomMembers[roomId].users.indexOf(username) !== -1) {
     socket.emit('roomError', 'User already in room');
+    console.log('User already in room');
     return;
   }
   if (activeRooms.has(roomId)) {

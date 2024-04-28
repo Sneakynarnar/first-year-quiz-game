@@ -73,7 +73,6 @@ app.post('/api/register', (req, res) => {
 app.post('/api/activeusers', (req, res) => {
   res.json(Array.from(socketToUser.values()));
 });
-
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
@@ -121,7 +120,7 @@ io.on('connection', (socket) => { // socket event listeners
   });
 
   socket.on('disconnect', () => {
-    rooms.disconnect(socket, io);
+    rooms.disconnect(socketToUser.get(socket.id), io);
     socketToUser.delete(socket.id);
   });
 });
