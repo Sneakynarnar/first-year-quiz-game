@@ -4,13 +4,13 @@ function fetchFriends() {
         { id: 2, name: 'Friend 2', online: true },
         { id: 3, name: 'Friend 3', online: false }
     ];
-
+  
     var onlineFriendsList = document.getElementById('onlineFriends');
     var offlineFriendsList = document.getElementById('offlineFriends');
-
+  
     onlineFriendsList.innerHTML = ''; 
     offlineFriendsList.innerHTML = ''; 
-
+  
     friendsData.forEach(function(friend) {
         var friendElement = document.createElement('div');
         friendElement.classList.add('friend');
@@ -22,17 +22,4 @@ function fetchFriends() {
             friendElement.classList.add('offline');
             offlineFriendsList.appendChild(friendElement);
         }
-    });
-}
-
-function addFriend() {
-
-}
-
-function removeFriend() {
-
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    fetchFriends();
-});
+  });
