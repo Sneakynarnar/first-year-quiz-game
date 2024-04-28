@@ -39,7 +39,12 @@ input[type="text"] {
     border-radius: 4px;
     margin-bottom: 10px;
 }
-button {
+
+/* Commented out just for consistency 
+   play page is the only one that had styling for the menu button
+*/
+
+/* button { 
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -51,4 +56,4 @@ button {
 }
 button:hover {
     background-color: #0056b3;
-}
+} */
