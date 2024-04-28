@@ -99,6 +99,11 @@ socket.on('roomCreated', (roomId) => {
   currentRoom = roomId;
   roomText.innerHTML = `Room ID: <b>${roomId}</b>`;
   console.log(`A room has been created: ${roomId}`);
+  const userItems = document.querySelector('.user-list');
+  const userItem = document.createElement('li');
+  userItem.textContent = accountId + ' (YOU)';
+  console.log(userItems);
+  userItems.appendChild(userItem);
 });
 
 socket.on('message', (id, messageContent) => {
@@ -120,11 +125,18 @@ socket.on('quizStarted', (questions) => {
 });
 
 socket.on('userJoined', (userId) => {
+  const userItems = document.querySelectorAll('.user-list li');
+  const tabListItem = document.createElement('li');
   const userItem = document.createElement('li');
-  userItem.textContent = `User ID: ${userId} joined the room`;
+  const chatList = document.querySelector('#chatText');
+  const message = `<b class="text-green-500">${getCurrentTime()} ${userId} joined the room</b> `;
+  tabListItem.textContent = userId;
+  userList.appendChild(tabListItem);
+  userItem.innerHTML = message;
+  console.log(message);
+  chatList.appendChild(userItem);
+  userItems.appendChild(tabListItem);
   console.log('User Joined: ', userId);
-  
-  userList.appendChild(userItem);
 });
 
 socket.on('userLeft', (userId) => {
@@ -134,6 +146,11 @@ socket.on('userLeft', (userId) => {
       item.remove();
     }
   });
+  const userItem = document.createElement('li');
+  const chatList = document.querySelector('#chatText');
+  const message = `<b class="text-red-500">${getCurrentTime()} ${userId} has left the room</b> `;
+  userItem.innerHTML = message;
+  chatList.appendChild(userItem);
 });
 
 socket.on('roomDeleted', (roomId) => {
@@ -244,7 +261,7 @@ function displayFirstQuestion(questions) {
   }
 
   if (!isTeacher) {
-    console.log('im not a teacher')
+    console.log('im not a teacher');
     const optionsList = firstQuizQuestions[0].options;
     const optionsListElement = document.createElement('ul');
 
