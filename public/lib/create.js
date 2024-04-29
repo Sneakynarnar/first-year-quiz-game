@@ -21,16 +21,17 @@ const optionSection = document.querySelector('#options');
 const showRoomSection = document.querySelector('#showRoom');
 const createRoomSection = document.querySelector('#createRoom');
 const playAreaSection = document.querySelector('#playArea');
-
+const chat = document.querySelector('#chat');
 // Answer Buttons
-let btnRed = document.querySelector('#btnRed');
-let btnBlue = document.querySelector('#btnBlue');
-let btnGreen = document.querySelector('#btnGreen');
-let btnYellow = document.querySelector('#btnYellow');
+const btnRed = document.querySelector('#btnRed');
+const btnBlue = document.querySelector('#btnBlue');
+const btnGreen = document.querySelector('#btnGreen');
+const btnYellow = document.querySelector('#btnYellow');
 
 let currentRoom = '';
-let isTeacher = false;
+let isHost = false;
 let questionsLoaded = false;
+
 
 function hideSection(section) {
   section.classList.add('hidden');
@@ -65,6 +66,10 @@ socket.on('roomsList', (rooms) => {
         currentRoom = roomId;
         console.log('Joining Room: ', roomId);
         hideSection(optionSection);
+        console.log(`Room Created: ${roomId}`);
+        const roomText = document.querySelector('#roomText');
+        currentRoom = roomId;
+        roomText.innerHTML = `Room ID: <b>${roomId}</b>`;
       }
     });
 
@@ -78,7 +83,7 @@ socket.on('roomsList', (rooms) => {
 btnCreate.addEventListener('click', () => {
   hideSection(optionSection);
   socket.emit('createRoom');
-  isTeacher = true;
+  isHost = true;
 });
 
 btnRooms.addEventListener('click', () => {
@@ -87,7 +92,7 @@ btnRooms.addEventListener('click', () => {
 
 btnStart.addEventListener('click', () => {
   socket.emit('startQuiz', currentRoom);
-  if (isTeacher && !questionsLoaded) {
+  if (isHost && !questionsLoaded) {
     socket.emit('getQuestions');
   }
 });
@@ -182,7 +187,7 @@ document.querySelector('#quitRoom').addEventListener('click', () => {
   console.log('Quit Roomed');
 });
 
-document.querySelector('#chat').addEventListener('submit', (event) => {
+chat.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const messageInput = document.querySelector('#chat textarea');
@@ -193,6 +198,21 @@ document.querySelector('#chat').addEventListener('submit', (event) => {
     messageInput.value = '';
   }
 });
+console.log(chat, 'Chat');
+
+chat.addEventListener('keydown', (event) => {
+  console.log('Key Pressed', event.key, event.shiftKey, event.key === 'Enter');
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    const messageInput = document.querySelector('#chat textarea');
+    const messageContent = messageInput.value.trim();
+    if (messageContent !== '') {
+      sendMessage(messageContent);
+      messageInput.value = '';
+    }
+  }
+});
+
 
 socket.on('questionsList', (questions) => {
   console.log('recieved questions', questions);
@@ -220,7 +240,7 @@ function displayQuestion(question) {
 }
 
 socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
-  console.log(`Question ${questionIndex + 1}: Correct option is ${correctOption}`)
+  console.log(`Question ${questionIndex + 1}: Correct option is ${correctOption}`);
   // const questionContainers = document.querySelectorAll('.question-container');
   // const currentQuestionContainer = questionContainers[questionIndex];
   // const options = currentQuestionContainer.querySelectorAll('li');
@@ -233,7 +253,7 @@ socket.on('correctAnswer', ({ questionIndex, correctOption }) => {
 });
 
 // socket.on('wrongAnswer', ({ questionIndex, selectedOption, correctOption }) => {
-  
+
 //   const questionContainers = document.querySelectorAll('.question-container');
 //   const currentQuestionContainer = questionContainers[questionIndex];
 //   const options = currentQuestionContainer.querySelectorAll('li');
@@ -266,7 +286,7 @@ document.querySelector('#btnRed').addEventListener('click', () => {
 function displayFirstQuestion(questions) {
   const firstQuizQuestions = questions['quiz-one'].questions;
 
-  if (isTeacher) {
+  if (isHost) {
     console.log("I'm a host");
     const questionTitleElement = document.createElement('h2');
     questionTitleElement.textContent = firstQuizQuestions[0].question_title;
@@ -275,7 +295,7 @@ function displayFirstQuestion(questions) {
     questionContainer.appendChild(questionTitleElement);
   }
 
-  if (!isTeacher) {
+  if (!isHost) {
     console.log("I'm a student");
     const optionsList = firstQuizQuestions[0].options;
     const optionsListElement = document.createElement('ul');
