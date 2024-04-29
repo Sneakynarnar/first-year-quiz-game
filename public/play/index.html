@@ -6,7 +6,6 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <link rel="icon" href="../media/favicon.svg" sizes="any" type="image/svg+xml" />
-<script src="fr1end.js"></script>
 
 
 <div class="antialiased bg-gray-100 dark-mode:bg-gray-900">
@@ -64,28 +63,12 @@
         </div>
     
         <label for="friendId" style="text-align: center;">Add / Remove Friend</label>
-    <button id="Button1" style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Remove Friend</button>
-    <button id="Button2" style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Add Friend</button>
+    <button id="rmfriend" style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Remove Friend</button>
+    <button id="addfriend" style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Add Friend</button>
     <input type="text" id="textBox1" style="display: none;">
     <input type="text" id="textBox2" style="display: none;">
   
-  <script>
-        document.getElementById('Button1').addEventListener('click', function() {
-        var textBox1 = document.getElementById('textBox1');
-        var textBox2 = document.getElementById('textBox2');
-    
-        textBox1.style.display = 'block';
-        textBox2.style.display = 'none';
-    });
-    
-    document.getElementById('Button2').addEventListener('click', function() {
-        var textBox1 = document.getElementById('textBox1');
-        var textBox2 = document.getElementById('textBox2');
-    
-        textBox1.style.display = 'none';
-        textBox2.style.display = 'block';
-    });
-  </script>
+
             </div>
         </body>
     </html>

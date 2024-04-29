@@ -38,25 +38,33 @@ export async function register(res, username, password) {
 }
 
 export async function sendFriendRequest(res, username, requestee) {
+  console.log('on server side');
   const db = await connect;
   const existingFriendRequests = await db.get(
     'SELECT * FROM friend_requests WHERE user = ? AND requestee = ?', [username, requestee],
   );
   if (existingFriendRequests) {
     res.status(400).json('Friend request already sent');
+    console.log('Friend request already sent');
     return;
   }
   const user = await db.get(
     'SELECT * FROM Accounts WHERE accountName = ?', [username],
   );
-  if (!user) {
+  const requesteeExists = await db.get(
+    'SELECT * FROM Accounts WHERE accountName = ?', [requestee],
+  );
+
+  if (!user || !requesteeExists) {
     res.status(400).json('User does not exist');
+    console.log('User does not exist');
     return;
   }
   await db.run(
-    'INSERT INTO friend_requests (user, requestee) VALUES (?, ?)', [user, requestee],
+    'INSERT INTO friend_requests (user, requestee) VALUES (?, ?)', [username, requestee],
   );
-  res.status(200).json('Friend request sent to');
+  res.status(200).json('Friend request sent to' + requestee);
+  console.log('Friend request successfully sent to ' + requestee);
 }
 
 export async function acceptFriendRequest(res, username, requestee) {

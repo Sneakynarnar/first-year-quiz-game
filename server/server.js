@@ -35,31 +35,39 @@ const io = new Server(server);
 const socketToUser = new Map();
 
 app.post('/api/createquiz', createQuiz);
-app.post('/api/friendrequest', (req, res) => {
-  const [from, to] = req.body;
+app.post('/api/sendfriendrequest', (req, res) => {
+  console.log(req.body);
+  const [from, to] = req.body.fr;
+  console.log('[FRIENDS]: friend request sending from', from, 'to', to);
   accounts.sendFriendRequest(res, from, to);
 });
 app.post('/api/acceptfriendrequest', (req, res) => {
   const [from, to] = req.body;
+  console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
   accounts.acceptFriendRequest(res, from, to);
 });
 app.post('/api/ignorefriendrequest', (req, res) => {
   const [from, to] = req.body;
+  console.log('[FRIENDS]: ignoring friend request from', from, 'to', to, 'on server side');
   accounts.ignoreFriendRequest(res, from, to);
 });
 app.post('/api/removefriend', (req, res) => {
   const [from, to] = req.body;
+  console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
   accounts.removeFriend(res, from, to);
 });
-app.post('/api/friends', (req, res) => {
-  const username = req.body;
+app.get('/api/friends/:userId', (req, res) => {
+  const username = req.params.userId;
+  console.log('[FRIENDS]: getting friends for', username);
   accounts.getFriends(res, username);
 });
 app.post('/api/friendrequests', (req, res) => {
   const username = req.body;
+  console.log('[FRIENDS]: getting friend requests for', username);
   accounts.getFriendRequests(res, username);
 });
 app.post('/api/leaderboard', (req, res) => {
+  console.log('[LEADERBOARD]: getting leaderboard');
   accounts.getLeaderboard(res);
 });
 app.post('/api/login', (req, res) => {

@@ -27,7 +27,12 @@ const btnRed = document.querySelector('#btnRed');
 const btnBlue = document.querySelector('#btnBlue');
 const btnGreen = document.querySelector('#btnGreen');
 const btnYellow = document.querySelector('#btnYellow');
+const addFriendButton = document.querySelector('#addfriend');
+const textBox1 = document.querySelector('#textBox1');
+const textBox2 = document.querySelector('#textBox2');
+console.log(addFriendButton);
 
+const removeFriendButton = document.querySelector('#rmfriend');
 let currentRoom = '';
 let isHost = false;
 let questionsLoaded = false;
@@ -323,3 +328,73 @@ function displayFirstQuestion(questions) {
     questionContainer.appendChild(optionsListElement);
   }
 }
+
+
+function displayFriends(friendsData) {
+  const onlineFriendsList = document.getElementById('onlineFriends');
+  const offlineFriendsList = document.getElementById('offlineFriends');
+  onlineFriendsList.innerHTML = '';
+  offlineFriendsList.innerHTML = '';
+  friendsData.forEach((friend) => {
+    const friendElement = document.createElement('div');
+    friendElement.classList.add('friend');
+    friendElement.textContent = friend.name;
+    if (friend.online) {
+      friendElement.classList.add('online');
+      onlineFriendsList.appendChild(friendElement);
+    } else {
+      friendElement.classList.add('offline');
+      offlineFriendsList.appendChild(friendElement);
+    }
+  });
+}
+
+
+const friendsData = fetch('http://localhost:3000/api/friends/' + accountId, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+addFriendButton.addEventListener('click', () => {
+  textBox1.style.display = 'block';
+  textBox2.style.display = 'none';
+});
+
+removeFriendButton.addEventListener('click', () => {
+  textBox1.style.display = 'none';
+  textBox2.style.display = 'block';
+});
+
+
+textBox1.addEventListener('keydown', (event) => {
+  console.log('sending friend request');
+  
+  if (event.key === 'Enter') {
+    const friendName = textBox1.value;
+    fetch('http://localhost:3000/api/sendfriendrequest/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fr: [accountId, friendName] }),
+    });
+    textBox2.value = '';
+  }
+},
+);
+textBox2.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    const friendName = textBox2.value;
+    fetch('http://localhost:3000/api/removefriend/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ fr: [accountId, friendName] }),
+    });
+    textBox2.value = '';
+  }
+},
+);
