@@ -1,22 +1,41 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script defer src="../lib/createquiz.js"></script>
   <title>Create Quiz</title>
 </head>
-<body>
-  <header>
-    <label for="avatar">Download current quiz template:</label>
-    <input type="file" id="quiz-template-upload" name="Quiz template" accept=".json"/>
-    <button id="upload-quiz-template-button">Upload Quiz</button>
-    <h1>Create Quiz</h1>
-    <label for="quizname">Quiz Name</label>
-    <input type="text" id="quiz-title">
+
+<body class="bg-gray-100">
+  <header class="bg-white shadow-md py-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-semibold">Create Quiz</h1>
+    </div>
   </header>
-  <button id="add-question-button">Add Question</button>
-  <div id="questioncontainer"></div>
-  <button id="submit-quiz-button">Submit Quiz</button>
-  <button id="download-quiz-template-button">Save Quiz</button>
+
+  <div class="container mx-auto mt-4 text-left">
+    <label for="avatar" class="text-gray-700 font-medium flex-auto">Load quiz template:</label>
+    <input type="file" id="quiz-template-upload" accept=".json" class="hidden" />
+<label for="quiz-template-upload" class="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded inline-block">Choose File</label>
+    <button id="upload-quiz-template-button"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Upload file</button>
+  </div>
+
+
+  <div class="container mx-auto mt-8">
+    <label for="quiz-title" class="text-gray-700 font-medium">Quiz Title</label>
+    <input type="text" id="quiz-title" placeholder="Enter quiz title" class="border border-gray-300 rounded px-4 py-2 mt-1 w-full">
+    <button id="add-question-button"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4">Add Question</button>
+    <div id="questioncontainer" class="mt-4"></div>
+    <button id="submit-quiz-button"
+      class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">Submit Quiz</button>
+    <button id="download-quiz-template-button"
+      class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-4">Download Quiz</button>
+  </div>
 </body>
+
 </html>
+
