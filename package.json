@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "npm i && npx tailwindcss -i public/src/input.css -o public/src/output.css && node server/modules/setup.mjs && node server/server.js",
     "dev": "nodemon server/server.js",
     "setup": "node server/modules/setup.mjs",
     "tw": "npx tailwindcss -i public/src/input.css -o public/src/output.css --watch",
