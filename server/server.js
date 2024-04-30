@@ -4,10 +4,8 @@ import express from 'express';
 import http from 'http';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
-import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import fs from 'fs';
-
 import { createQuiz } from './modules/quizes.mjs';
 import * as accounts from './modules/accounts.mjs';
 import * as rooms from './modules/sockets.mjs';
@@ -31,20 +29,30 @@ app.use(express.static(path.join(__dirname, '..', 'public'))); // Serve the publ
 
 const server = http.createServer(app);
 const io = new Server(server);
-
 const socketToUser = new Map();
 
 app.post('/api/createquiz', createQuiz);
+
 app.post('/api/sendfriendrequest', (req, res) => {
   console.log(req.body);
   const [from, to] = req.body.fr;
   console.log('[FRIENDS]: friend request sending from', from, 'to', to);
-  accounts.sendFriendRequest(res, from, to);
+  const status = accounts.sendFriendRequest(res, from, to);
+  if (status === 'Success') {
+    res.status(200).json('Friend request sent');
+  } else {
+    res.status(400).json(status);
+  }
 });
 app.post('/api/acceptfriendrequest', (req, res) => {
   const [from, to] = req.body;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
-  accounts.acceptFriendRequest(res, from, to);
+  const status = accounts.acceptFriendRequest(res, from, to);
+  if (status === 'Success') {
+    res.status(200).json('Friend request accepted');
+  } else {
+    res.status(400).json(status);
+  }
 });
 app.post('/api/ignorefriendrequest', (req, res) => {
   const [from, to] = req.body;
@@ -59,7 +67,8 @@ app.post('/api/removefriend', (req, res) => {
 app.get('/api/friends/:userId', (req, res) => {
   const username = req.params.userId;
   console.log('[FRIENDS]: getting friends for', username);
-  accounts.getFriends(res, username);
+  const friends = formatFriends(accounts.getFriends(username));
+  res.status(200).json({ friends });
 });
 app.post('/api/friendrequests', (req, res) => {
   const username = req.body;
@@ -72,7 +81,12 @@ app.post('/api/leaderboard', (req, res) => {
 });
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body; // Destructure the username and password from the request body
-  accounts.login(res, username, password); // Call the login function from accounts.mjs
+  const loggedIn = accounts.login(username, password); // Call the login function from accounts.mjs
+  if (loggedIn) {
+    res.status(200).json('Login successful');
+  } else {
+    res.status(401).json('Login failed');
+  }
 });
 app.post('/api/register', (req, res) => {
   const { username, password } = req.body;
@@ -132,3 +146,15 @@ io.on('connection', (socket) => { // socket event listeners
     socketToUser.delete(socket.id);
   });
 });
+
+function formatFriends(friends) {
+  const formattedFriends = [];
+  for (const friend of friends) {
+    if (socketToUser.values().includes(friend)) {
+      formattedFriends.push({ name: friend, online: true });
+    } else {
+      formattedFriends.push({ name: friend, online: false });
+    }
+  }
+  return formattedFriends;
+}

@@ -34,20 +34,21 @@ async function initDataBase() {
     ('redjive', 'redjive'),
     ('nord', 'nord'),
     ('zod', 'zod'),
+    ('test', 'test'),
     ('user', 'user');
   `);
-  await db.run('DROP TABLE IF EXISTS friends');
+  await db.run('DROP TABLE IF EXISTS Friends');
   await db.run(`
-    CREATE TABLE friends (
+    CREATE TABLE Friends (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user1 TEXT NOT NULL,
       user2 TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
-  await db.run('DROP TABLE IF EXISTS friend_requests');
+  await db.run('DROP TABLE IF EXISTS FriendRequests');
   await db.run(`
-    CREATE TABLE friend_requests (
+    CREATE TABLE FriendRequests (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user TEXT NOT NULL,
       requestee TEXT NOT NULL,

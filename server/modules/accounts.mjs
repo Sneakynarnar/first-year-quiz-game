@@ -13,40 +13,67 @@ export async function init() {
 const connect = init();
 
 
-export async function login(res, username, password) {
+/**
+ * Logs in a user with the provided username and password.
+ * @param {string} username - The username of the account.
+ * @param {string} password - The password of the account.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the login is successful, false otherwise.
+ */
+export async function login(username, password) {
   const db = await connect;
   const record = await db.get(
     'SELECT * FROM Accounts WHERE accountName = ? AND accountPassword = ?',
     [username, password],
   );
-
-  if (record) {
-    res.status(200).send('Login successful');
-  } else {
-    res.status(401).send('Invalid login');
-  }
+  return !!record;
 }
 
-export async function register(res, username, password) {
+/**
+ * Registers a new user account.
+ * @param {string} username - The username for the new account.
+ * @param {string} password - The password for the new account.
+ * @returns {Promise<string>} - A promise that resolves to a string indicating the registration status.
+ *    Possible values are 'UserAlreadyExists' if the username already exists, and 'Success' if the registration is successful.
+ */
+export async function register(username, password) {
   const db = await connect;
+  const existingUser = await db.get(
+    'SELECT * FROM Accounts WHERE accountName = ?', [username],
+  );
+  if (existingUser) {
+    return 'UserAlreadyExists';
+  }
   await db.run(
     'INSERT INTO Accounts (accountName, accountPassword) VALUES (?, ?)',
     [username, password],
   );
-  res.status(200).json('Registration successful');
-  // TODO: Add error handling for duplicate usernames / special characters
+  return 'Success';
+  // TODO: Add error handling for special characters
 }
 
-export async function sendFriendRequest(res, username, requestee) {
-  console.log('on server side');
+/**
+ * Sends a friend request from one user to another.
+ * @param {string} username - The username of the user sending the friend request.
+ * @param {string} requestee - The username of the user receiving the friend request.
+ * @returns {Promise<string>} A promise that resolves to a string indicating the result of the operation.
+ */
+export async function sendFriendRequest(username, requestee) {
+  if (username === requestee) {
+    return 'Cannot add self';
+  }
   const db = await connect;
   const existingFriendRequests = await db.get(
-    'SELECT * FROM friend_requests WHERE user = ? AND requestee = ?', [username, requestee],
+    'SELECT * FROM FriendRequests WHERE user = ? AND requestee = ?', [username, requestee],
   );
   if (existingFriendRequests) {
-    res.status(400).json('Friend request already sent');
-    console.log('Friend request already sent');
-    return;
+    return 'Friend request already sent';
+  }
+  const existingFriends = await db.get(
+    'SELECT * FROM Friends WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)',
+    [username, requestee, requestee, username],
+  );
+  if (existingFriends) {
+    return 'User and requestee are already friends';
   }
   const user = await db.get(
     'SELECT * FROM Accounts WHERE accountName = ?', [username],
@@ -56,65 +83,126 @@ export async function sendFriendRequest(res, username, requestee) {
   );
 
   if (!user || !requesteeExists) {
-    res.status(400).json('User does not exist');
-    console.log('User does not exist');
-    return;
+    return 'User does not exist';
   }
   await db.run(
-    'INSERT INTO friend_requests (user, requestee) VALUES (?, ?)', [username, requestee],
+    'INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', [username, requestee],
   );
-  res.status(200).json('Friend request sent to' + requestee);
-  console.log('Friend request successfully sent to ' + requestee);
+  return 'Success';
 }
 
-export async function acceptFriendRequest(res, username, requestee) {
+/**
+ * Accepts a friend request between two users.
+ * @param {string} username - The username of the user accepting the friend request.
+ * @param {string} requestee - The username of the user who sent the friend request.
+ * @returns {Promise<string>} A promise that resolves to a success message if the friend request is accepted, or an error message if no friend request is found.
+ */
+export async function acceptFriendRequest(username, requestee) {
   const db = await connect;
+  const existingFriendRequests = await db.get(
+    'SELECT * FROM FriendRequests WHERE user = ? AND requestee = ?', [username, requestee],
+  );
+  if (!existingFriendRequests) {
+    return 'No friend request from that user';
+  }
   await db.run(
-    'INSERT INTO friends (user1, user2) VALUES (?, ?)',
+    'INSERT INTO Friends (user1, user2) VALUES (?, ?)',
+    [username, requestee],
   );
   await db.run(
-    'DELETE FROM friend_requests WHERE (user = ? AND requestee = ?)', [requestee, username],
+    'DELETE FROM FriendRequests WHERE (user = ? AND requestee = ?)', [username, requestee],
   );
-  res.status(200).json('Friend request accepted');
+  return 'Success';
 }
 
-export async function getFriendRequests(res, username) {
+/**
+ * Retrieves friend requests for a given username.
+ *
+ * @param {string} username - The username for which to retrieve friend requests.
+ * @returns {Promise<Array<Object>>} - A promise that resolves to an array of friend requests.
+ */
+export async function getFriendRequests(username) {
   const db = await connect;
   const friendRequests = await db.all(
-    'SELECT * FROM friend_requests WHERE requestee = ?', [username],
+    'SELECT * FROM FriendRequests WHERE requestee = ?', [username],
   );
-  res.status(200).json(friendRequests);
+  return friendRequests;
 }
 
-export async function getFriends(res, username) {
+/**
+ * Retrieves the friends of a user from the database.
+ * @param {Object} res - The response object.
+ * @param {string} username - The username of the user.
+ * @returns {Array<string>} - An array of usernames representing the user's friends.
+ */
+export async function getFriends(username) {
   const db = await connect;
-  const friends = await db.all(
+  const friendsRows = await db.all(
     'SELECT * FROM friends WHERE user1 = ? OR user2 = ?', [username, username],
   );
-  res.status(200).json(friends);
+  const friends = [];
+  for (const friend of friendsRows) {
+    if (friend.user1 === username) {
+      friends.push(friend.user2);
+    } else {
+      friends.push(friend.user1);
+    }
+  }
+  return friends;
 }
 
-export async function ignoreFriendRequest(res, username, requestee) {
+/**
+ * Ignores a friend request.
+ *
+ * @param {Response} res - The response object.
+ * @param {string} username - The username of the user receiving the friend request.
+ * @param {string} requestee - The username of the user who sent the friend request.
+ * @returns {Promise<string>} A promise that resolves to a success message if the friend request is ignored, or an error message if no friend request is found.
+ */
+export async function ignoreFriendRequest(username, requestee) {
   const db = await connect;
-  await db.run(
-    'DELETE FROM friend_requests WHERE (user = ? AND requestee = ?)', [requestee, username],
+  const existingFriendRequests = await db.get(
+    'SELECT * FROM FriendRequests WHERE user = ? AND requestee = ?', [username, requestee],
   );
-  res.status(200).json('Friend request ignored');
+  if (!existingFriendRequests) {
+    return 'No friend request from that user';
+  }
+  await db.run(
+    'DELETE FROM FriendRequests WHERE (user = ? AND requestee = ?)', [username, requestee],
+  );
+  return 'Success';
 }
 
-export async function removeFriend(res, username, friend) {
+/**
+ * Removes a friend from the database.
+ * @param {string} username - The username of the user.
+ * @param {string} friend - The username of the friend to be removed.
+ * @returns {Promise<string>} A promise that resolves to a success message or an error message.
+ */
+export async function removeFriend(username, friend) {
   const db = await connect;
+  const existingFriend = await db.get(
+    'SELECT * FROM friends WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)',
+    [username, friend, friend, username],
+  );
+  if (!existingFriend) {
+    return 'No friend found';
+  }
   await db.run(
     'DELETE FROM friends WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)',
     [username, friend, friend, username],
   );
-  res.status(200).json('Friend removed');
+  return 'Success';
 }
 
-export async function getLeaderboard(res) {
+/**
+ * Retrieves the leaderboard from the database.
+ * @returns {Promise<Array<Object>>} The leaderboard array containing account information.
+ */
+export async function getLeaderboard() {
   const db = await connect;
   const leaderboard = await db.all(
     'SELECT * FROM Accounts ORDER BY totalCorrectAnswers DESC',
   );
-  res.status(200).json(leaderboard);
+  return leaderboard;
 }

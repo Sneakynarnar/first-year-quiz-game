@@ -370,7 +370,7 @@ removeFriendButton.addEventListener('click', () => {
 
 textBox1.addEventListener('keydown', (event) => {
   console.log('sending friend request');
-  
+
   if (event.key === 'Enter') {
     const friendName = textBox1.value;
     fetch('http://localhost:3000/api/sendfriendrequest/', {
