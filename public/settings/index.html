@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings</title>
+<link rel="stylesheet" href="../media/settings.css">
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Settings</h1>
+    <form id="usernameForm">
+        <label for="username">Change Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <button type="submit" class="btn">Save Username</button>
+    </form>
+    <button id="deleteAccountBtn" class="btn danger" onclick="confirmDelete()">Delete Account</button><br><br>
+    <button id="resetStatsBtn" class="btn danger" onclick="confirmReset()">Reset Stats</button>
+</div>
+
+<script src="../lib/settings.js"></script>
+</body>
+</html>

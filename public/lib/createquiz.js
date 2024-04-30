@@ -5,25 +5,50 @@ const downloadQuestionsTemplateButton = document.querySelector('#download-quiz-t
 const quizTitleText = document.querySelector('#quiz-title');
 const quizFileInput = document.querySelector('#quiz-template-upload');
 const uploadQuizButton = document.querySelector('#upload-quiz-template-button')
+
 let questionCounter = 1;
 function addQuestion() {
   const questionElement = document.createElement('div');
-  questionElement.classList.add('question');
+  questionElement.classList.add('question', 'p-4', 'mb-4', 'bg-white', 'rounded', 'shadow-md');
+
   questionElement.innerHTML = `
-    <h2>Question ${questionCounter}</h2>
-    <input type="text" placeholder="Enter question title" class="question-title">
-    <input type="text" placeholder="Option 1" class="option">
-    <input type="text" placeholder="Option 2" class="option">
-    <input type="text" placeholder="Option 3" class="option">
-    <input type="text" placeholder="Option 4" class="option">
-    <input type="radio" name="correct-answer-${questionCounter}" value="1">
-    <input type="radio" name="correct-answer-${questionCounter}" value="2">
-    <input type="radio" name="correct-answer-${questionCounter}" value="3">
-    <input type="radio" name="correct-answer-${questionCounter}" value="4">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="text-lg font-semibold">Question ${questionCounter}</h2>
+      <button class="delete-question-btn text-red-500 font-semibold">Delete</button>
+    </div>
+    <input type="text" placeholder="Enter question title" class="question-title block w-full p-2 border border-gray-300 rounded mb-3">
+    <div class="grid grid-cols-2 gap-3">
+      <div class="flex items-center">
+        <input type="text" placeholder="Option 1" class="option block w-full p-2 border border-gray-300 rounded mb-1">
+        <input type="radio" name="correct-answer-${questionCounter}" value="1" class="h-4 w-7">
+      </div>
+      <div class="flex items-center">
+        <input type="text" placeholder="Option 2" class="option block w-full p-2 border border-gray-300 rounded mb-1">
+        <input type="radio" name="correct-answer-${questionCounter}" value="2" class="h-4 w-7">
+      </div>
+      <div class="flex items-center">
+        <input type="text" placeholder="Option 3" class="option block w-full p-2 border border-gray-300 rounded mb-1">
+        <input type="radio" name="correct-answer-${questionCounter}" value="3" class="h-4 w-7">
+      </div>
+      <div class="flex items-center">
+        <input type="text" placeholder="Option 4" class="option block w-full p-2 border border-gray-300 rounded mb-1">
+        <input type="radio" name="correct-answer-${questionCounter}" value="4" class="h-4 w-7">
+      </div>
+    </div>
   `;
+
   questionContainer.appendChild(questionElement);
+  
+  const deleteButton = questionElement.querySelector('.delete-question-btn');
+  deleteButton.addEventListener('click', () => {
+    questionElement.remove();
+  });
+
   questionCounter++;
 }
+
+
+
 function jsonifyQuestions() {
   const questions = [];
   const questionElements = document.querySelectorAll('.question');
@@ -61,27 +86,46 @@ function unjsonifyQuestions() {
     const questions = parsedData[quizTitle];
     questions.forEach((questionData) => {
       const questionElement = document.createElement('div');
-      questionElement.classList.add('question');
+      questionElement.classList.add('question', 'p-4', 'mb-4', 'bg-white', 'rounded', 'shadow-md');
       questionElement.innerHTML = `
-        <h2>${questionData.question_title}</h2>
-        <input type="text" placeholder="Enter question title" class="question-title" value="${questionData.question_title}">
-        <input type="text" placeholder="Option 1" class="option" value="${questionData.options[0]}">
-        <input type="text" placeholder="Option 2" class="option" value="${questionData.options[1]}">
-        <input type="text" placeholder="Option 3" class="option" value="${questionData.options[2]}">
-        <input type="text" placeholder="Option 4" class="option" value="${questionData.options[3]}">
-        <input type="radio" name="correct-answer-${questionCounter}" value="1" ${questionData.correct_ans === 1 ? 'checked' : ''}>
-        <input type="radio" name="correct-answer-${questionCounter}" value="2" ${questionData.correct_ans === 2 ? 'checked' : ''}>
-        <input type="radio" name="correct-answer-${questionCounter}" value="3" ${questionData.correct_ans === 3 ? 'checked' : ''}>
-        <input type="radio" name="correct-answer-${questionCounter}" value="4" ${questionData.correct_ans === 4 ? 'checked' : ''}>
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">${questionData.question_title}</h2>
+          <button class="delete-question-btn text-red-500 font-semibold">Delete</button>
+        </div>
+        <input type="text" placeholder="Enter question title" class="question-title block w-full p-2 border border-gray-300 rounded mb-3" value="${questionData.question_title}">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="flex items-center">
+            <input type="text" placeholder="Option 1" class="option block w-full p-2 border border-gray-300 rounded mb-1" value="${questionData.options[0]}">
+            <input type="radio" name="correct-answer-${questionCounter}" value="1" class="h-4 w-7" ${questionData.correct_ans === 1 ? 'checked' : ''}>
+          </div>
+          <div class="flex items-center">
+            <input type="text" placeholder="Option 2" class="option block w-full p-2 border border-gray-300 rounded mb-1" value="${questionData.options[1]}">
+            <input type="radio" name="correct-answer-${questionCounter}" value="2" class="h-4 w-7" ${questionData.correct_ans === 2 ? 'checked' : ''}>
+          </div>
+          <div class="flex items-center">
+            <input type="text" placeholder="Option 3" class="option block w-full p-2 border border-gray-300 rounded mb-1" value="${questionData.options[2]}">
+            <input type="radio" name="correct-answer-${questionCounter}" value="3" class="h-4 w-7" ${questionData.correct_ans === 3 ? 'checked' : ''}>
+          </div>
+          <div class="flex items-center">
+            <input type="text" placeholder="Option 4" class="option block w-full p-2 border border-gray-300 rounded mb-1" value="${questionData.options[3]}">
+            <input type="radio" name="correct-answer-${questionCounter}" value="4" class="h-4 w-7" ${questionData.correct_ans === 4 ? 'checked' : ''}>
+          </div>
+        </div>
       `;
-
       questionContainer.appendChild(questionElement);
+      
+      const deleteButton = questionElement.querySelector('.delete-question-btn');
+      deleteButton.addEventListener('click', () => {
+        questionElement.remove();
+      });
+
       questionCounter++;
     });
   };
 
   reader.readAsText(file);
 }
+
 
 function downloadQuestions() {
   const formattedQuestions = jsonifyQuestions();
