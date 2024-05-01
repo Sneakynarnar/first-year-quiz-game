@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-async function init() {
+export async function init() {
   const db = await open({
     filename: './database.sqlite',
     driver: sqlite3.Database,
@@ -56,6 +56,18 @@ async function initDataBase() {
     );
   `);
   console.log('Database set up!');
+
+  await db.run('DROP TABLE IF EXISTS Questions');
+  await db.run(`
+    CREATE TABLE Questions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      question TEXT NOT NULL,
+      category TEXT NOT NULL,
+      choices = TEXT NOT NULL,
+      answer SMALLINT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
 }
 
 

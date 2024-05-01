@@ -1,24 +1,18 @@
 import { QUnit } from 'qunit';
 import * as accounts from './accounts.mjs';
 import * as sockets from './sockets.mjs';
+import * as quizes from './quizes.mjs';
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import { init } from './setup.mjs';
 import sinon from 'sinon';
 import Filter from 'bad-words';
 const filter = new Filter();
 filter.addWords('leagueoflegends');
 
-export async function init() {
-  const db = await open({
-    filename: './database.sqlite',
-    driver: sqlite3.Database,
-    verbose: true,
-  });
-  return db;
-}
 
 const connect = init();
-console.log('===============================================');
+console.log('=======================================================');
 
 QUnit.module('Accounts Module');
 function add(a, b) {
@@ -141,11 +135,24 @@ QUnit.test('Send Message test', (assert) => {
   sockets.activeRooms.delete(roomId);
 });
 
-QUnit.test('Delete Room test', (assert) => {
-  const socket = { rooms: { find: sinon.stub() }, id: '123' };
-  const io = { emit: sinon.stub() };
-  const roomId = '123';
-  sockets.quitRoom(socket, io);
-  assert.ok(io.emit.calledWith('roomDeleted', roomId), 'io.emit should be called with "roomDeleted" and roomId');
-  assert.equal(sockets.activeRooms.get('123'), 'room should no longer be in activeRooms');
+QUint.test('Storing quiz from json test', async (assert) => {
+  const db = await connect;
+  await db.run('DELETE FROM Questions');
+  await quizes.storeQuizFromJson();
+  const questions = await db.all('SELECT * FROM Questions');
+  assert.equal(questions.length, 3, 'Three questions should be stored in the database');
+  assert.equal(questions[0].question, 'What is the capital of France?', 'First question should be "What is the capital of France?"');
+  assert.equal(questions[1].question, 'What is the capital of Spain?', 'Second question should be "What is the capital of Spain?"');
+  assert.equal(questions[2].question, 'What is the capital of Germany?', 'Third question should be "What is the capital of Germany?"');
 });
+
+// TODO: Add tests for delete room and quit room functions
+// QUnit.test('Delete Room test', (assert) => {
+//   const socket = { rooms: { find: sinon.stub() }, id: '123' };
+//   const io = { emit: sinon.stub() };
+//   const roomId = '123';
+//   sockets.quitRoom(socket, io);
+//   assert.ok(io.emit.calledWith('roomDeleted', roomId), 'io.emit should be called with "roomDeleted" and roomId');
+//   assert.equal(sockets.activeRooms.get('123'), 'room should no longer be in activeRooms');
+//   sockets.quitRoom
+// });

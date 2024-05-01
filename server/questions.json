@@ -1,1 +1,369 @@
-{"quiz-one":{"quiz-title":"General Knowledge","questions":[{"question_title":"What data type is used to store non-whole numbers?","options":["Integer","Float","Boolean","String"],"correct_ans":1},{"question_title":"Which data type is used to store two values: TRUE or FALSE?","options":["Boolean","String","Integer","Float"],"correct_ans":0},{"question_title":"What does the symbol < mean in programming?","options":["Less than","Greater than","Equal to","Not Equal to"],"correct_ans":0},{"question_title":"What data type is used to store whole numbers?","options":["Integer","Float","Boolean","String"],"correct_ans":0},{"question_title":"How do you create a list?","options":["Using square brackets []","Using curly braces {}","Using parentheses ()","Using a function"],"correct_ans":0},{"question_title":"What is the purpose of the split() method?","options":["To concatenate strings","To split a string into a list of substrings","To merge a list of strings into one string","To count the number of characters in a string"],"correct_ans":1},{"question_title":"How do you open a file in Python for reading?","options":["open(\"filename\", \"r\")","open(\"filename\", \"read\")","open(\"filename\")"],"correct_ans":0},{"question_title":"What is the purpose of the ord() function?","options":["Converts a character to its ASCII value","Converts a string to a list of characters","Changes the order of a string","Counts the number of characters in a string"],"correct_ans":0},{"question_title":"Which of the following is the correct way to format a string?","options":["print(\"Hello, {name}!\".format(name= \"World\"))","print(\"Hello, {name}!\".replace(name= \"World\"))","print(\"Hello, {name}!\".format(\"World\"))","print(\"Hello, {name}!\".replace(\"World\"))"],"correct_ans":0},{"question_title":"What is the output of this expression: 2 ** 3","options":["5","6","8","9"],"correct_ans":2},{"question_title":"Which operator is used for exponentiation?","options":["*","//","**","||"],"correct_ans":2},{"question_title":"Which of the following is NOT a valid loop statement?","options":["for","while","until","do-while"],"correct_ans":2},{"question_title":"How do you define a comment?","options":["#","//","/* */","<- ->"],"correct_ans":0},{"question_title":"Which is NOT a valid Python data type?","options":["int","float","byte","bool"],"correct_ans":2},{"question_title":"What is the purpose of the 'is' operator?","options":["To check if two variables point to the same object","To check if a variable is an instance of a class","To check if a variable is of a certain type","To check if a variable is not found"],"correct_ans":0},{"question_title":"What is the output of the following expression: 10 // 3","options":["3","3.0","3.33","30"],"correct_ans":0},{"question_title":"What is the output of the following expression: 10 % 3","options":["3","1","0","10"],"correct_ans":1},{"question_title":"What is the purpose of the 'break' statement?","options":["To pause a loop","To exit a loop","To skip the current iteration of a loop","To start a new iteration of a loop"],"correct_ans":1},{"question_title":"What is the output of the following expression: 'hello' * 3","options":["hellohellohello","hello hello hello","hello","Hello, hello, hello"],"correct_ans":0},{"question_title":"What is the purpose of the 'if' statement?","options":["To declare a variable","To define a loop construct","To perform a conditional check","To exit a loop or switch statement"],"correct_ans":2}]},"quiz-two":{"quiz-title":"Mathematics","questions":[{"question_title":"What is the value of Pi (π) rounded to two decimal places?","options":["3.14","3.15","3.16","3.17"],"correct_ans":0},{"question_title":"What is the formula to calculate the area of a circle?","options":["πr","πr^2","2πr","2πr^2"],"correct_ans":1},{"question_title":"Which of the following is the Pythagorean theorem?","options":["a^2 + b^2 = c^2","a^2 - b^2 = c^2","a^2 + b^2 = √c","a^2 - b^2 = √c"],"correct_ans":0},{"question_title":"What is the value of sin(90°)?","options":["0","1","0.5","undefined"],"correct_ans":1},{"question_title":"What is the value of cos(0°)?","options":["0","1","-1","undefined"],"correct_ans":1},{"question_title":"What is the value of tan(45°)?","options":["0","1","√2","undefined"],"correct_ans":2}]},"quiz-three":{"quiz-title":"Core computing Concepts","questions":[{"question_title":"Which is an accurate definition of a vulnerability?","options":["A weakness, or flaw, in software, a system or process","A type of malware or virus disguised as legitimate software","A network device which sends data packets from one network to another.","A breach of the security rules for a system or service."],"correct_ans":0},{"question_title":"Which is the correct sequence?","options":["Review; Contain; Eradicate; Recover; Triage","Review; Recover; Eradicate; Contain; Triage","Triage; Contain; Eradicate; Recover; Review","Triage; Recover; Contain; Eradicate; Review"],"correct_ans":3},{"question_title":"select one: ","options":["Standard are specific and measurable","Standards primary focus on accessibility","Standards are officially documented","Standards promote best practice"],"correct_ans":3},{"question_title":"which unit is used to determine which unauth or illegitimate users are verified ?","options":["False Acceptance Rate","False Rejection Rate","Crossover Error Rate"],"correct_ans":0},{"question_title":"Which of the following most concerns the act of authorising an entity?","options":["Provision of a username","Verifying a biometric measurement","Checking an access control list","Monitoring authorised access"],"correct_ans":3},{"question_title":"Which of the following are examples of 'thing a user has?","options":["Username, password and security questions","PIN number and Fingerprint","Password and PIN number"],"correct_ans":2},{"question_title":"Which of the following statements is FALSE regarding Command Line Interfaces (CLI):","options":["Command line interfaces are an obsolete method of interacting with computers.","It is possible to use a Command Line Interface within Microsoft Windows 11","Command line interfaces are powerful when used by expert users.","Command line interfaces require users to remember command parameters."],"correct_ans":0}]},"quiz-four":{"quiz-title":"Networks","questions":[{"question_title":" The postal delivery system is analogous with ___ protocols        ?","options":["Virtual circuit","Connectionless","Connection free","Connection oriented"],"correct_ans":2},{"question_title":"A protocol is a:        ","options":["Reference Model","set of rules for communications","Packet header","Symbol that indicates the start of a packet"],"correct_ans":1},{"question_title":"Standards are important because they provide:","options":["Closed procurements","Proprietary systems","Virtual circuits","Open systems"],"correct_ans":3},{"question_title":"a packet is: ","options":["a unit of data that is sent using a given protocol","a symbol that represents the beginning of a submission","A protocol header","An 8-bit byte (octet)"],"correct_ans":0},{"question_title":" Which is an example of an IP address:","options":["300.25","192.100.68.14","net19,host12","ox32-45-B8-OE-63"],"correct_ans":1},{"question_title":" The data Link layer is subdivided into:","options":["Network and host sub layers","MAC and LLC","Physical and Network Layers","None of the above"],"correct_ans":3},{"question_title":" The X.25 standard defines:","options":["A packet assembler/disassembler protocol","An interface to a packet-switched network","A cell-replay approach to networking","A proprietary approach to internetworking"],"correct_ans":3},{"question_title":" In frame relay, if the user sends faster than the committed information rate within the excess information rate, the network will:","options":["Discard the data","Mark the data as being “Eligible for Discard","Delay sending the data with other packets","Combine the data with other packets"],"correct_ans":2},{"question_title":" Communication between two completely different email systems may be performed by a:","options":["Router","Gateway","Gatekeeper","Bridge"],"correct_ans":3},{"question_title":"Which is a wide area networking (WAN) protocol","options":["Ethernet","Token Ring","Apple talk","Frame relay"],"correct_ans":3}]},"eee0ead2-4d91-479f-8af6-e0b25252f090":{"quiz-title":"adada","questions":[{"question_title":"wa","options":["wawa","wawa","wawa","wawawa"],"correct_ans":4}]}}
+{
+  "quiz-one": {
+    "quiz-title": "General Knowledge",
+    "questions": [
+      {
+        "question_title": "What data type is used to store non-whole numbers?",
+        "options": ["Integer", "Float", "Boolean", "String"],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "Which data type is used to store two values: TRUE or FALSE?",
+        "options": ["Boolean", "String", "Integer", "Float"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What does the symbol < mean in programming?",
+        "options": ["Less than", "Greater than", "Equal to", "Not Equal to"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What data type is used to store whole numbers?",
+        "options": ["Integer", "Float", "Boolean", "String"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "How do you create a list?",
+        "options": [
+          "Using square brackets []",
+          "Using curly braces {}",
+          "Using parentheses ()",
+          "Using a function"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the purpose of the split() method? In python",
+        "options": [
+          "To concatenate strings",
+          "To split a string into a list of substrings",
+          "To merge a list of strings into one string",
+          "To count the number of characters in a string"
+        ],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "How do you open a file in Python for reading?",
+        "options": [
+          "open(\"filename\", \"r\")",
+          "open(\"filename\", \"read\")",
+          "open(\"filename\")"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the purpose of the ord() function?",
+        "options": [
+          "Converts a character to its ASCII value",
+          "Converts a string to a list of characters",
+          "Changes the order of a string",
+          "Counts the number of characters in a string"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "Which of the following is the correct way to format a string?",
+        "options": [
+          "print(\"Hello, {name}!\".format(name= \"World\"))",
+          "print(\"Hello, {name}!\".replace(name= \"World\"))",
+          "print(\"Hello, {name}!\".format(\"World\"))",
+          "print(\"Hello, {name}!\".replace(\"World\"))"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the output of this expression: 2 ** 3",
+        "options": ["5", "6", "8", "9"],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "Which operator is used for exponentiation?",
+        "options": ["*", "//", "**", "||"],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "Which of the following is NOT a valid loop statement?",
+        "options": ["for", "while", "until", "do-while"],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "How do you define a comment?",
+        "options": ["#", "//", "/* */", "<- ->"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "Which is NOT a valid Python data type?",
+        "options": ["int", "float", "byte", "bool"],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "What is the purpose of the 'is' operator?",
+        "options": [
+          "To check if two variables point to the same object",
+          "To check if a variable is an instance of a class",
+          "To check if a variable is of a certain type",
+          "To check if a variable is not found"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the output of the following expression: 10 // 3",
+        "options": ["3", "3.0", "3.33", "30"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the output of the following expression: 10 % 3",
+        "options": ["3", "1", "0", "10"],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "What is the purpose of the 'break' statement?",
+        "options": [
+          "To pause a loop",
+          "To exit a loop",
+          "To skip the current iteration of a loop",
+          "To start a new iteration of a loop"
+        ],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "What is the output of the following expression: 'hello' * 3",
+        "options": [
+          "hellohellohello",
+          "hello hello hello",
+          "hello",
+          "Hello, hello, hello"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the purpose of the 'if' statement?",
+        "options": [
+          "To declare a variable",
+          "To define a loop construct",
+          "To perform a conditional check",
+          "To exit a loop or switch statement"
+        ],
+        "correct_ans": 2
+      }
+    ]
+  },
+  "quiz-two": {
+    "quiz-title": "Mathematics",
+    "questions": [
+      {
+        "question_title": "What is the value of Pi (π) rounded to two decimal places?",
+        "options": ["3.14", "3.15", "3.16", "3.17"],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the formula to calculate the area of a circle?",
+        "options": ["πr", "πr^2", "2πr", "2πr^2"],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "Which of the following is the Pythagorean theorem?",
+        "options": [
+          "a^2 + b^2 = c^2",
+          "a^2 - b^2 = c^2",
+          "a^2 + b^2 = √c",
+          "a^2 - b^2 = √c"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "What is the value of sin(90°)?",
+        "options": ["0", "1", "0.5", "undefined"],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "What is the value of cos(0°)?",
+        "options": ["0", "1", "-1", "undefined"],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "What is the value of tan(45°)?",
+        "options": ["0", "1", "√2", "undefined"],
+        "correct_ans": 2
+      }
+    ]
+  },
+  "quiz-three": {
+    "quiz-title": "Core computing Concepts",
+    "questions": [
+      {
+        "question_title": "Which is an accurate definition of a vulnerability?",
+        "options": [
+          "A weakness, or flaw, in software, a system or process",
+          "A type of malware or virus disguised as legitimate software",
+          "A network device which sends data packets from one network to another.",
+          "A breach of the security rules for a system or service."
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "Which is the correct sequence?",
+        "options": [
+          "Review; Contain; Eradicate; Recover; Triage",
+          "Review; Recover; Eradicate; Contain; Triage",
+          "Triage; Contain; Eradicate; Recover; Review",
+          "Triage; Recover; Contain; Eradicate; Review"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "select one: ",
+        "options": [
+          "Standard are specific and measurable",
+          "Standards primary focus on accessibility",
+          "Standards are officially documented",
+          "Standards promote best practice"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "which unit is used to determine which unauth or illegitimate users are verified ?",
+        "options": [
+          "False Acceptance Rate",
+          "False Rejection Rate",
+          "Crossover Error Rate"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": "Which of the following most concerns the act of authorising an entity?",
+        "options": [
+          "Provision of a username",
+          "Verifying a biometric measurement",
+          "Checking an access control list",
+          "Monitoring authorised access"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "Which of the following are examples of 'thing a user has?",
+        "options": [
+          "Username, password and security questions",
+          "PIN number and Fingerprint",
+          "Password and PIN number"
+        ],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "Which of the following statements is FALSE regarding Command Line Interfaces (CLI):",
+        "options": [
+          "Command line interfaces are an obsolete method of interacting with computers.",
+          "It is possible to use a Command Line Interface within Microsoft Windows 11",
+          "Command line interfaces are powerful when used by expert users.",
+          "Command line interfaces require users to remember command parameters."
+        ],
+        "correct_ans": 0
+      }
+    ]
+  },
+  "quiz-four": {
+    "quiz-title": "Networks",
+    "questions": [
+      {
+        "question_title": " The postal delivery system is analogous with ___ protocols        ?",
+        "options": [
+          "Virtual circuit",
+          "Connectionless",
+          "Connection free",
+          "Connection oriented"
+        ],
+        "correct_ans": 2
+      },
+      {
+        "question_title": "A protocol is a:        ",
+        "options": [
+          "Reference Model",
+          "set of rules for communications",
+          "Packet header",
+          "Symbol that indicates the start of a packet"
+        ],
+        "correct_ans": 1
+      },
+      {
+        "question_title": "Standards are important because they provide:",
+        "options": [
+          "Closed procurements",
+          "Proprietary systems",
+          "Virtual circuits",
+          "Open systems"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "a packet is: ",
+        "options": [
+          "a unit of data that is sent using a given protocol",
+          "a symbol that represents the beginning of a submission",
+          "A protocol header",
+          "An 8-bit byte (octet)"
+        ],
+        "correct_ans": 0
+      },
+      {
+        "question_title": " Which is an example of an IP address:",
+        "options": [
+          "300.25",
+          "192.100.68.14",
+          "net19,host12",
+          "ox32-45-B8-OE-63"
+        ],
+        "correct_ans": 1
+      },
+      {
+        "question_title": " The data Link layer is subdivided into:",
+        "options": [
+          "Network and host sub layers",
+          "MAC and LLC",
+          "Physical and Network Layers",
+          "None of the above"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": " The X.25 standard defines:",
+        "options": [
+          "A packet assembler/disassembler protocol",
+          "An interface to a packet-switched network",
+          "A cell-replay approach to networking",
+          "A proprietary approach to internetworking"
+        ],
+        "correct_ans": 3
+      },
+      {
+        "question_title": " In frame relay, if the user sends faster than the committed information rate within the excess information rate, the network will:",
+        "options": [
+          "Discard the data",
+          "Mark the data as being “Eligible for Discard",
+          "Delay sending the data with other packets",
+          "Combine the data with other packets"
+        ],
+        "correct_ans": 2
+      },
+      {
+        "question_title": " Communication between two completely different email systems may be performed by a:",
+        "options": ["Router", "Gateway", "Gatekeeper", "Bridge"],
+        "correct_ans": 3
+      },
+      {
+        "question_title": "Which is a wide area networking (WAN) protocol",
+        "options": ["Ethernet", "Token Ring", "Apple talk", "Frame relay"],
+        "correct_ans": 3
+      }
+    ]
+  },
+  "eee0ead2-4d91-479f-8af6-e0b25252f090": {
+    "quiz-title": "adada",
+    "questions": [
+      {
+        "question_title": "wa",
+        "options": ["wawa", "wawa", "wawa", "wawawa"],
+        "correct_ans": 4
+      }
+    ]
+  }
+}

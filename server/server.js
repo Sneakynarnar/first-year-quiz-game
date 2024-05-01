@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import cors from 'cors';
 import fs from 'fs';
-import { createQuiz } from './modules/quizes.mjs';
+import { storeQuiz } from './modules/quizes.mjs';
 import * as accounts from './modules/accounts.mjs';
 import * as rooms from './modules/sockets.mjs';
 
@@ -18,7 +18,6 @@ const questions = JSON.parse(
     'utf8',
   ),
 );
-console.log(questions);
 dotenv.config(); // Load the environment variables
 const app = express();
 const port = process.env.PORT || 3000; // Set the port to the environment variable PORT or 3000
@@ -31,7 +30,14 @@ const server = http.createServer(app);
 const io = new Server(server);
 const socketToUser = new Map();
 
-app.post('/api/createquiz', createQuiz);
+app.post('/api/createquiz', (req, res) => {
+  const quizCreated = storeQuiz(req.body);
+  if (quizCreated) {
+    res.status(200).json('Quiz created successfully');
+  } else {
+    res.status(400).json('Quiz creation failed');
+  }
+});
 
 app.post('/api/sendfriendrequest', (req, res) => {
   console.log(req.body);
@@ -134,7 +140,7 @@ io.on('connection', (socket) => { // socket event listeners
   });
 
   socket.on('quitRoom', () => {
-    rooms.quitRoom(socket, io);
+    rooms.deleteRoom(socket, io);
   });
 
   socket.on('sendMessage', (roomId, messageContent) => {
