@@ -2,19 +2,14 @@ import { QUnit } from 'qunit';
 import * as accounts from './accounts.mjs';
 import * as sockets from './sockets.mjs';
 import * as quizes from './quizes.mjs';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
+import * as server from '../server.js';
+import { socketToUser } from '../server.js';
 import { init } from './setup.mjs';
 import sinon from 'sinon';
 import Filter from 'bad-words';
 const filter = new Filter();
 filter.addWords('leagueoflegends');
 
-
-const connect = init();
-console.log('=======================================================');
-
-QUnit.module('Accounts Module');
 function add(a, b) {
   return a + b;
 }
@@ -23,61 +18,71 @@ QUnit.test('Example test', (assert) => {
   assert.equal(add(1, 2), 3, '1 + 2 should equal 3');
 });
 
-QUnit.test('Login test', async (assert) => {
-  const result = await accounts.login('test', 'test');
-  assert.ok(result, 'Login should succeed with correct credentials');
-  const result2 = await accounts.login('test', 'wrongpassword');
-  assert.notOk(result2, 'Login should fail with incorrect password');
-});
+const connect = init();
+console.log('=======================================================');
 
-QUnit.test('Register test', async (assert) => {
-  const db = await connect;
-  await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+QUnit.module('Accounts Module', {
+  beforeEach: async () => {
+    const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
+    await db.run('INSERT INTO Accounts (accountName, accountPassword) VALUES (?, ?)', ['QUnit', 'test']);
+  },
+  afterEach: async () => {
+    const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
+  },
+}, () => {
+  QUnit.test('Login test', async (assert) => {
+    const result = await accounts.login('test', 'test');
+    assert.ok(result, 'Login should succeed with correct credentials');
+    const result2 = await accounts.login('test', 'wrongpassword');
+    assert.notOk(result2, 'Login should fail with incorrect password');
+  });
 
-  const result = await accounts.register('test', 'test');
-  assert.equal(result, 'UserAlreadyExists', 'Register should fail if the user already exists');
-  const result2 = await accounts.register('QUnit', 'test');
-  assert.equal(result2, 'Success', 'Register should succeed if the user does not exist');
-});
+  QUnit.test('Register test', async (assert) => {
+    const db = await connect;
+    const result = await accounts.register('test', 'test');
+    assert.equal(result, 'UserAlreadyExists', 'Register should fail if the user already exists');
+    const userExists = await db.get('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    console.log('userExists', userExists);
+    const result2 = await accounts.register('QUnit', 'test');
+    assert.equal(result2, 'Success', 'Register should succeed if the user does not exist');
+  });
 
-QUnit.test('Send friend request test', async (assert) => {
-  const db = await connect;
-  await db.run('DELETE FROM Friends WHERE user1 = ? OR user2 = ?', ['QUnit', 'QUnit']);
-  await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
-  await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['QUnit', 'sneaky']);
-  assert.equal(await accounts.sendFriendRequest('test', 'test'), 'Cannot add self', 'Cannot add self as a friend');
-  assert.equal(await accounts.sendFriendRequest('test', 'QUnit'), 'Success', 'Friend request should succeed');
-  assert.equal(await accounts.sendFriendRequest('QUnit', 'sneaky'), 'User and requestee are already friends', 'Cannot add the same friend twice');
-  assert.equal(await accounts.sendFriendRequest('test', 'QUnit2'), 'User does not exist', 'Cannot friend request a user that does not exist');
-  assert.equal(await accounts.sendFriendRequest('test', 'QUnit'), 'Friend request already sent', 'Cannot send the same friend request twice');
-  assert.equal(await accounts.sendFriendRequest('QUnit', 'test'), 'Success', 'Friend request should succeed');
-});
-QUnit.test('Accept friend request test', async (assert) => {
-  const db = await connect;
-  await db.run('DELETE FROM Friends WHERE user1 = ? OR user2 = ?', ['QUnit', 'QUnit']);
-  await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
-  await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']);
-  assert.equal(await accounts.acceptFriendRequest('test', 'QUnit'), 'Success', 'Accept friend request should succeed');
-  assert.equal(await accounts.acceptFriendRequest('test', 'QUnit'), 'No friend request from that user', 'Cannot accept a friend request that does not exist');
-  assert.equal(await accounts.acceptFriendRequest('test', 'QUnit2'), 'No friend request from that user', 'The friend request should not exist after being accepted');
-});
+  QUnit.test('Send friend request test', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['QUnit', 'sneaky']);
+    assert.equal(await accounts.sendFriendRequest('test', 'test'), 'Cannot add self', 'Cannot add self as a friend');
+    assert.equal(await accounts.sendFriendRequest('test', 'QUnit'), 'Success', 'Friend request should succeed');
+    assert.equal(await accounts.sendFriendRequest('QUnit', 'sneaky'), 'User and requestee are already friends', 'Cannot add the same friend twice');
+    assert.equal(await accounts.sendFriendRequest('test', 'QUnit2'), 'User does not exist', 'Cannot friend request a user that does not exist');
+    assert.equal(await accounts.sendFriendRequest('test', 'QUnit'), 'Friend request already sent', 'Cannot send the same friend request twice');
+    assert.equal(await accounts.sendFriendRequest('QUnit', 'test'), 'Success', 'Friend request should succeed');
+  });
+  QUnit.test('Accept friend request test', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']);
+    assert.equal(await accounts.acceptFriendRequest('test', 'QUnit'), 'Success', 'Accept friend request should succeed');
+    assert.equal(await accounts.acceptFriendRequest('test', 'QUnit'), 'No friend request from that user', 'Cannot accept a friend request that does not exist');
+    assert.equal(await accounts.acceptFriendRequest('test', 'QUnit2'), 'No friend request from that user', 'The friend request should not exist after being accepted');
+  });
 
-QUnit.test('Ignore friend request test', async (assert) => {
-  const db = await connect;
-  await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
-  await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']);
-  assert.equal(await accounts.ignoreFriendRequest('test', 'QUnit'), 'Success', 'Ignore friend request should succeed');
-  assert.equal(await accounts.ignoreFriendRequest('test', 'QUnit'), 'No friend request from that user', 'Cannot ignore a friend request that does not exist');
-});
+  QUnit.test('Ignore friend request test', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']);
+    assert.equal(await accounts.ignoreFriendRequest('test', 'QUnit'), 'Success', 'Ignore friend request should succeed');
+    assert.equal(await accounts.ignoreFriendRequest('test', 'QUnit'), 'No friend request from that user', 'Cannot ignore a friend request that does not exist');
+  });
 
-QUnit.test('Remove friend test', async (assert) => {
-  const db = await connect;
-  await db.run('DELETE FROM Friends WHERE user1 = ? OR user2 = ?', ['QUnit', 'QUnit']);
-  await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['test', 'QUnit']);
-  assert.equal(await accounts.removeFriend('test', 'QUnit'), 'Success', 'Remove friend should succeed');
-  assert.equal(await accounts.removeFriend('test', 'QUnit'), 'No friend found', 'Cannot remove a friend that does not exist');
+  QUnit.test('Remove friend test', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['test', 'QUnit']);
+    assert.equal(await accounts.removeFriend('test', 'QUnit'), 'Success', 'Remove friend should succeed');
+    assert.equal(await accounts.removeFriend('test', 'QUnit'), 'No friend found', 'Cannot remove a friend that does not exist');
+  });
 });
-
 QUnit.module('Sockets Module');
 
 QUnit.test('Socket test', (assert) => {
@@ -117,7 +122,6 @@ QUnit.test('Join Room test', (assert) => {
   assert.ok(socket.emit.calledWith('roomError', 'User already in room'), 'socket.emit should be called with "roomError" and "User already in room"');
 });
 
-
 QUnit.test('Send Message test', (assert) => {
   const socket = { emit: sinon.stub() };
   const io = { to: sinon.stub().returns({ emit: sinon.stub() }) };
@@ -135,15 +139,55 @@ QUnit.test('Send Message test', (assert) => {
   sockets.activeRooms.delete(roomId);
 });
 
-QUint.test('Storing quiz from json test', async (assert) => {
+QUnit.test('Notify friend request test', (assert) => {
+  const io = { to: sinon.stub().returns({ emit: sinon.stub() }) };
+  socketToUser.set('12345', 'sneaky');
+  server.notifyFriendRequestHelper(io, 'test', 'sneaky');
+  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
+  assert.ok(io.to().emit.calledWith('friendRequest'), 'io.to().emit should be called with "friendRequest"');
+  server.notifyFriendRequestAcceptedHelper(io, 'sneaky', 'test');
+  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
+  assert.ok(io.to().emit.calledWith('friendRequestAccepted'), 'io.to().emit should be called with "friendRequestAccepted"');
+});
+
+QUnit.module('Quizes Module');
+QUnit.test('Storing quiz from json test', async (assert) => {
   const db = await connect;
   await db.run('DELETE FROM Questions');
   await quizes.storeQuizFromJson();
   const questions = await db.all('SELECT * FROM Questions');
-  assert.equal(questions.length, 3, 'Three questions should be stored in the database');
-  assert.equal(questions[0].question, 'What is the capital of France?', 'First question should be "What is the capital of France?"');
-  assert.equal(questions[1].question, 'What is the capital of Spain?', 'Second question should be "What is the capital of Spain?"');
-  assert.equal(questions[2].question, 'What is the capital of Germany?', 'Third question should be "What is the capital of Germany?"');
+  assert.equal(questions.length, 43, 'Three questions should be stored in the database');
+  assert.equal(questions[0].question, 'What data type is used to store non-whole numbers?', 'First question should be "What data type is used to store non-whole numbers?"');
+  assert.equal(questions[1].question, 'Which data type is used to store two values: TRUE or FALSE?', 'Third question should be "What is the capital of Germany?"');
+});
+
+QUnit.test('Storing quiz test', async (assert) => {
+  const db = await connect;
+  await db.run('DELETE FROM Questions');
+  await quizes.storeQuiz({ 'quiz-title': 'Test Quiz', 'questions': [{ question_title: 'What is the capital of Germany?', options: ['Berlin', 'Paris', 'London', 'Madrid'], correct_ans: 'Berlin' }] });
+  const questions = await db.all('SELECT * FROM Questions');
+  assert.equal(questions.length, 1, 'One question should be stored in the database');
+  assert.equal(questions[0].question, 'What is the capital of Germany?', 'First question should be "What is the capital of Germany?"');
+});
+
+QUnit.test('Get questions tests', async (assert) => {
+  const db = await connect;
+  await db.run('DELETE FROM Questions');
+  await quizes.storeQuizFromJson();
+  const questions = await quizes.getRandomQuestions(5);
+  assert.equal(questions.length, 5, 'Five random questions should be returned');
+  const tooManyQuestions = await quizes.getRandomQuestions(10000);
+  assert.equal(tooManyQuestions.length, 43, 'If the number of requested questions is greater than the number of questions in the database, all questions should be returned');
+  const questions2 = await quizes.getRandomQuestionsFromCategory(5, 'General Knowledge');
+  assert.equal(questions2.length, 5, 'Five random questions from the "General Knowledge" category should be returned');
+  let correctCategory = true;
+  for (const question of questions) {
+    if (question.category !== 'General Knowledge') {
+      correctCategory = false;
+      return;
+    }
+  }
+  assert.ok(correctCategory, 'All questions should be from the "General Knowledge" category');
 });
 
 // TODO: Add tests for delete room and quit room functions

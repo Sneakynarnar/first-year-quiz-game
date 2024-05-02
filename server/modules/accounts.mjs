@@ -1,6 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-
+import * as server from '../server.js';
 export async function init() {
   const db = await open({
     filename: './database.sqlite',
@@ -88,6 +88,7 @@ export async function sendFriendRequest(username, requestee) {
   await db.run(
     'INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', [username, requestee],
   );
+  server.notifyFriendRequest(requestee);
   return 'Success';
 }
 
@@ -112,6 +113,7 @@ export async function acceptFriendRequest(username, requestee) {
   await db.run(
     'DELETE FROM FriendRequests WHERE (user = ? AND requestee = ?)', [username, requestee],
   );
+  server.notifyFriendRequestAccepted(requestee, username);
   return 'Success';
 }
 

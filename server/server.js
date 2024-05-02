@@ -9,7 +9,7 @@ import fs from 'fs';
 import { storeQuiz } from './modules/quizes.mjs';
 import * as accounts from './modules/accounts.mjs';
 import * as rooms from './modules/sockets.mjs';
-
+import * as quiz from './modules/quizes.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url)); // Get the directory name of the current module
 // Quiz Bank;
 const questions = JSON.parse(
@@ -28,7 +28,24 @@ app.use(express.static(path.join(__dirname, '..', 'public'))); // Serve the publ
 
 const server = http.createServer(app);
 const io = new Server(server);
-const socketToUser = new Map();
+export const socketToUser = new Map();
+
+app.get('/api/questions', (req, res) => {
+  let questions;
+  req.query.count = req.query.count || 10;
+  if (req.query.category) {
+    questions = quiz.getQuestions(req.query.count, req.query.category);
+  } else {
+    questions = quiz.getRandomQuestions(req.query.count);
+  }
+  res.status(200).json(questions);
+});
+
+app.get('/api/allquestions', (req, res) => {
+  quiz.getQuestions().then((questions) => {
+    res.status(200).json(questions);
+  });
+});
 
 app.post('/api/createquiz', (req, res) => {
   const quizCreated = storeQuiz(req.body);
@@ -163,4 +180,21 @@ function formatFriends(friends) {
     }
   }
   return formattedFriends;
+}
+function notifyFriendRequest(username, requestee) {
+  // console.log('Notifying', requestee, 'of friend request');
+  const socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee)[0];
+  io.to(socketId).emit('friendRequest', username);
+}
+
+export function notifyFriendRequestHelper(username, requestee) {
+  notifyFriendRequest(io, username, requestee);
+}
+function notifyFriendRequestAcceptedHelper(io, requestee, username) {
+  // console.log('Notifying', requestee, 'of friend request acceptance from', username);
+  const socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee)[0];
+  io.to(socketId).emit('friendRequestAccepted', username);
+}
+export function notifyFriendRequestAccepted(requestee, username) {
+  notifyFriendRequestAcceptedHelper(io, requestee, username);
 }

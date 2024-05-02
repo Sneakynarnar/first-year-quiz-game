@@ -1,5 +1,6 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
+import { storeQuizFromJson } from './quizes.mjs';
 export async function init() {
   const db = await open({
     filename: './database.sqlite',
@@ -55,19 +56,19 @@ async function initDataBase() {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
-  console.log('Database set up!');
-
-  await db.run('DROP TABLE IF EXISTS Questions');
+  await db.run('DROP TABLE IF EXISTS Questions;');
   await db.run(`
     CREATE TABLE Questions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       question TEXT NOT NULL,
       category TEXT NOT NULL,
-      choices = TEXT NOT NULL,
+      choices TEXT NOT NULL,
       answer SMALLINT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
+  storeQuizFromJson();
+  console.log('Database set up!');
 }
 
 
