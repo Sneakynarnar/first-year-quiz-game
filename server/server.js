@@ -50,9 +50,9 @@ app.get('/api/allquestions', (req, res) => {
 app.post('/api/createquiz', (req, res) => {
   const quizCreated = storeQuiz(req.body);
   if (quizCreated) {
-    res.status(200).json('Quiz created successfully');
+    res.status(200).send('Quiz created successfully');
   } else {
-    res.status(400).json('Quiz creation failed');
+    res.status(400).send('Quiz creation failed');
   }
 });
 
@@ -60,9 +60,10 @@ app.post('/api/sendfriendrequest', async (req, res) => {
   console.log(req.body);
   const [from, to] = req.body.fr;
   console.log('[FRIENDS]: friend request sending from', from, 'to', to);
-  const status = await accounts.sendFriendRequest(res, from, to);
+  const status = await accounts.sendFriendRequest(from, to);
+  console.log(status);
   if (status === 'Success') {
-    res.status(200).json('Friend request sent');
+    res.status(200).send('Friend request sent');
   } else {
     res.status(400).send(status);
   }
@@ -70,7 +71,7 @@ app.post('/api/sendfriendrequest', async (req, res) => {
 app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
-  const status = await accounts.acceptFriendRequest(res, from, to);
+  const status = await accounts.acceptFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend request accepted');
   } else {
@@ -85,7 +86,7 @@ app.post('/api/ignorefriendrequest', async (req, res) => {
 app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
-  const status = await accounts.removeFriend(res, from, to);
+  const status = await accounts.removeFriend(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend removed');
   } else {
