@@ -37,7 +37,6 @@ let currentRoom = '';
 let isHost = false;
 let questionsLoaded = false;
 
-
 function hideSection(section) {
   section.classList.add('hidden');
 }

@@ -30,6 +30,24 @@ const server = http.createServer(app);
 const io = new Server(server);
 export const socketToUser = new Map();
 
+app.get('/api/titles', async (req, res) => {
+  try {
+    const quizTitles = Object.keys(questions);
+
+    const response = {
+      quizTitles: quizTitles.map(title => ({
+        quizId: title,
+        quizTitle: questions[title]['quiz-title']
+      }))
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error fetching quiz titles:', error);
+    res.status(500).json({ error: 'Failed to fetch quiz titles' });
+  }
+});
+
 app.get('/api/questions', async (req, res) => {
   let questions;
   req.query.count = req.query.count || 10;
@@ -70,7 +88,6 @@ app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
   const status = await accounts.acceptFriendRequest(from, to);
-  const status = await accounts.acceptFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend request accepted');
     console.log('Friend request accepted from', from, 'to', to, 'on server side');
@@ -93,7 +110,6 @@ app.post('/api/ignorefriendrequest', async (req, res) => {
 app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
-  const status = await accounts.removeFriend(from, to);
   const status = await accounts.removeFriend(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend removed');
