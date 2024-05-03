@@ -370,19 +370,10 @@ removeFriendButton.addEventListener('click', () => {
 
 textBox1.addEventListener('keydown', (event) => {
   console.log('sending friend request');
-
+    await sendFriendRequest(textBox1.value);
   if (event.key === 'Enter') {
     const friendName = textBox1.value;
-    fetch('http://localhost:3000/api/sendfriendrequest/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ fr: [accountId, friendName] }),
-    });
-    textBox2.value = '';
-  }
-},
+
 );
 textBox2.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
@@ -398,3 +389,68 @@ textBox2.addEventListener('keydown', (event) => {
   }
 },
 );
+
+
+async function sendFriendRequest(username) {
+  const response = await fetch('http://localhost:3000/api/sendfriendrequest/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ users: [accountId, friendName] }),
+  });
+  return response.ok
+}
+
+async function removeFriend(username) {
+  const response = await fetch('http://localhost:3000/api/removefriend/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ users: [accountId, friendName] }),
+  });
+  return response.ok
+}
+
+async function acceptFriendRequest(username) {
+  const response = await fetch('http://localhost:3000/api/acceptfriendrequest/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ users: [accountId, friendName] }),
+  });
+  return response.ok;
+}
+
+async function ignoreFriendRequest(username) {
+  const response = await fetch('http://localhost:3000/api/ignorefriendrequest/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ users: [accountId, friendName] }),
+  });
+  return response.ok;
+}
+
+async function getFriends() {
+  const response = await fetch('http://localhost:3000/api/friends/' + accountId, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.json();
+}
+
+async function getFriendRequests() { 
+  const response = await fetch('http://localhost:3000/api/friendrequests/' + accountId, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return response.json();
+}
