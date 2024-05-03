@@ -383,7 +383,7 @@ async function sendFriendRequest(username) {
     },
     body: JSON.stringify({ users: [accountId, username] }),
   });
-  return response.ok
+  return response.ok;
 }
 
 async function removeFriend(username) {
@@ -394,7 +394,7 @@ async function removeFriend(username) {
     },
     body: JSON.stringify({ users: [accountId, username] }),
   });
-  return response.ok
+  return response.ok;
 }
 
 async function acceptFriendRequest(username) {
@@ -429,7 +429,7 @@ async function getFriends() {
   return response.json();
 }
 
-async function getFriendRequests() { 
+async function getFriendRequests() {
   const response = await fetch('http://localhost:3000/api/friendrequests/' + accountId, {
     method: 'GET',
     headers: {
@@ -467,7 +467,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       selectedOption = event.target.value;
       console.log('Selected quiz ID:', selectedOption);
     });
-
   } catch (error) {
     console.error('Error fetching quiz titles:', error);
     alert('Failed to load quiz titles. Please try again later.');
