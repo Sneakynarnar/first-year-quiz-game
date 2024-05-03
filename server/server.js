@@ -70,7 +70,6 @@ app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
   const status = await accounts.acceptFriendRequest(from, to);
-  const status = await accounts.acceptFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend request accepted');
     console.log('Friend request accepted from', from, 'to', to, 'on server side');
@@ -93,7 +92,6 @@ app.post('/api/ignorefriendrequest', async (req, res) => {
 app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
-  const status = await accounts.removeFriend(from, to);
   const status = await accounts.removeFriend(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend removed');
