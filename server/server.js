@@ -56,66 +56,71 @@ app.post('/api/createquiz', (req, res) => {
   }
 });
 
-app.post('/api/sendfriendrequest', (req, res) => {
+app.post('/api/sendfriendrequest', async (req, res) => {
   console.log(req.body);
   const [from, to] = req.body.fr;
   console.log('[FRIENDS]: friend request sending from', from, 'to', to);
-  const status = accounts.sendFriendRequest(res, from, to);
+  const status = await accounts.sendFriendRequest(res, from, to);
   if (status === 'Success') {
     res.status(200).json('Friend request sent');
   } else {
     res.status(400).send(status);
   }
 });
-app.post('/api/acceptfriendrequest', (req, res) => {
+app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
-  const status = accounts.acceptFriendRequest(res, from, to);
+  const status = await accounts.acceptFriendRequest(res, from, to);
   if (status === 'Success') {
-    res.status(200).json('Friend request accepted');
+    res.status(200).send('Friend request accepted');
   } else {
     res.status(400).send(status);
   }
 });
-app.post('/api/ignorefriendrequest', (req, res) => {
+app.post('/api/ignorefriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: ignoring friend request from', from, 'to', to, 'on server side');
-  accounts.ignoreFriendRequest(res, from, to);
+  await accounts.ignoreFriendRequest(res, from, to);
 });
-app.post('/api/removefriend', (req, res) => {
+app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
-  accounts.removeFriend(res, from, to);
+  const status = await accounts.removeFriend(res, from, to);
+  if (status === 'Success') {
+    res.status(200).send('Friend removed');
+  } else {
+    res.status(400).send(status);
+  }
 });
-app.get('/api/friends/:userId', (req, res) => {
+app.get('/api/friends/:userId', async (req, res) => {
   const username = req.params.userId;
   console.log('[FRIENDS]: getting friends for', username);
-  const friends = formatFriends(accounts.getFriends(username));
+  const friends = formatFriends(await accounts.getFriends(username));
   res.status(200).json({ friends });
 });
-app.post('/api/friendrequests', (req, res) => {
+app.post('/api/friendrequests', async (req, res) => {
   const username = req.body;
   console.log('[FRIENDS]: getting friend requests for', username);
-  accounts.getFriendRequests(res, username);
+  await accounts.getFriendRequests(res, username);
 });
-app.post('/api/leaderboard', (req, res) => {
+app.post('/api/leaderboard', async (req, res) => {
   console.log('[LEADERBOARD]: getting leaderboard');
-  accounts.getLeaderboard(res);
+  await accounts.getLeaderboard(res);
 });
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { username, password } = req.body; // Destructure the username and password from the request body
-  const loggedIn = accounts.login(username, password); // Call the login function from accounts.mjs
+  const loggedIn = await accounts.login(username, password); // Call the login function from accounts.mjs
   if (loggedIn) {
     res.status(200).json('Login successful');
   } else {
     res.status(401).json('Login failed');
   }
 });
-app.post('/api/register', (req, res) => {
+app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
-  accounts.register(res, username, password); // Call the register function from accounts.mjs
+  await accounts.register(res, username, password); // Call the register function from accounts.mjs
 });
-app.post('/api/activeusers', (req, res) => {
+app.post('/api/activeusers', async (req, res) => {
   res.json(Array.from(socketToUser.values()));
 });
 server.listen(port, () => {
