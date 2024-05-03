@@ -78,12 +78,12 @@ app.post('/api/acceptfriendrequest', (req, res) => {
   }
 });
 app.post('/api/ignorefriendrequest', (req, res) => {
-  const [from, to] = req.body;
+  const [from, to] = req.body.users;
   console.log('[FRIENDS]: ignoring friend request from', from, 'to', to, 'on server side');
   accounts.ignoreFriendRequest(res, from, to);
 });
 app.post('/api/removefriend', (req, res) => {
-  const [from, to] = req.body;
+  const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
   accounts.removeFriend(res, from, to);
 });
@@ -181,20 +181,27 @@ function formatFriends(friends) {
   }
   return formattedFriends;
 }
-function notifyFriendRequest(username, requestee) {
+export function notifyFriendRequest(client, username, requestee) {
+  client = client === null ? io : client;
   // console.log('Notifying', requestee, 'of friend request');
-  const socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee)[0];
-  io.to(socketId).emit('friendRequest', username);
+  let socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee);
+  if (socketId === undefined) {
+    return;
+  } else {
+    socketId = socketId[0];
+  }
+  client.to(socketId).emit('friendRequest', username);
 }
 
-export function notifyFriendRequestHelper(username, requestee) {
-  notifyFriendRequest(io, username, requestee);
-}
-function notifyFriendRequestAcceptedHelper(io, requestee, username) {
+
+export function notifyFriendRequestAccepted(client, requestee, username) {
   // console.log('Notifying', requestee, 'of friend request acceptance from', username);
-  const socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee)[0];
-  io.to(socketId).emit('friendRequestAccepted', username);
-}
-export function notifyFriendRequestAccepted(requestee, username) {
-  notifyFriendRequestAcceptedHelper(io, requestee, username);
+  client = client === null ? io : client;
+  let socketId = Array.from(socketToUser.entries()).find(([, value]) => value === requestee);
+  if (socketId === undefined) {
+    return;
+  } else {
+    socketId = socketId[0];
+  }
+  client.to(socketId).emit('friendRequestAccepted', username);
 }
