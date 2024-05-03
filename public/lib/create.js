@@ -235,6 +235,11 @@ function displayQuestion(question) {
   const questionContainer = document.querySelector('#questionContainer');
   questionContainer.innerHTML = `<h2>${question.question_title}</h2>`;
   const optionsListElement = document.createElement('ul');
+  btnRed.textContent = question.options[0];
+  btnBlue.textContent = question.options[1];
+  btnGreen.textContent = question.options[2];
+  btnYellow.textContent = question.options[3];
+
   question.options.forEach((option) => {
     const optionItem = document.createElement('li');
     optionItem.textContent = option;
