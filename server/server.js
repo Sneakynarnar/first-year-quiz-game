@@ -50,9 +50,9 @@ app.get('/api/allquestions', async (req, res) => {
 app.post('/api/createquiz', async (req, res) => {
   const quizCreated = await storeQuiz(req.body);
   if (quizCreated) {
-    res.status(200).json('Quiz created successfully');
+    res.status(200).send('Quiz created successfully');
   } else {
-    res.status(400).json('Quiz creation failed');
+    res.status(400).send('Quiz creation failed');
   }
 });
 
@@ -69,6 +69,7 @@ app.post('/api/sendfriendrequest', async (req, res) => {
 app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
+  const status = await accounts.acceptFriendRequest(from, to);
   const status = await accounts.acceptFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend request accepted');
@@ -92,6 +93,7 @@ app.post('/api/ignorefriendrequest', async (req, res) => {
 app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
+  const status = await accounts.removeFriend(from, to);
   const status = await accounts.removeFriend(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend removed');
