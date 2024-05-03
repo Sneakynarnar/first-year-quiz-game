@@ -1,3 +1,3 @@
-import { storeQuizFromJson } from './modules/quizes.mjs'; 
+import { storeQuizFromJson } from './modules/quizes.mjs';
 
 storeQuizFromJson();

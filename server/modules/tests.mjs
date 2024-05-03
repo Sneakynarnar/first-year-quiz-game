@@ -379,6 +379,7 @@ QUnit.test('GET /api/activeusers', assert => {
       assert.equal(res.statusCode, 200, 'Status code should be 200');
       assert.ok(Array.isArray(res.body), 'Response body should be an array');
       assert.equal(res.body.length, 3, 'Response body should contain 3 users');
+      socketToUser.clear();
       done();
     });
 });

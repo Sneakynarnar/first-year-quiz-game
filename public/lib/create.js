@@ -354,13 +354,7 @@ function displayFriends(friendsData) {
 }
 
 
-const friendsData = fetch('http://localhost:3000/api/friends/' + accountId, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
+const friendsData = getFriends();
 addFriendButton.addEventListener('click', () => {
   textBox1.style.display = 'block';
   textBox2.style.display = 'none';
