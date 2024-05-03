@@ -45,14 +45,24 @@ QUnit.module('Accounts Module', {
     const db = await connect;
     const result = await accounts.register('test', 'test');
     assert.equal(result, 'UserAlreadyExists', 'Register should fail if the user already exists');
-    const userExists = await db.get('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
-    console.log('userExists', userExists);
     const result2 = await accounts.register('QUnit', 'test');
     assert.equal(result2, 'Success', 'Register should succeed if the user does not exist');
+  });
+  QUnit.test('Get friends test', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['QUnit', 'test']);
+    const friends = await accounts.getFriends('QUnit');
+    assert.equal(friends.length, 1, 'One friend should be returned');
+    assert.equal(friends[0], 'test', 'The friend should be "test"');
   });
 
   QUnit.test('Send friend request test', async (assert) => {
     const db = await connect;
+    socketToUser.set('12345', 'sneaky');
+    socketToUser.set('12346', 'QUnit');
+    socketToUser.set('12347', 'QUnit2');
+    await db.run('DELETE FROM FriendRequests');
+    await db.run('DELETE FROM Friends');
     await db.run('INSERT INTO Friends (user1, user2) VALUES (?, ?)', ['QUnit', 'sneaky']);
     assert.equal(await accounts.sendFriendRequest('test', 'test'), 'Cannot add self', 'Cannot add self as a friend');
     assert.equal(await accounts.sendFriendRequest('test', 'QUnit'), 'Success', 'Friend request should succeed');
@@ -142,10 +152,10 @@ QUnit.test('Send Message test', (assert) => {
 QUnit.test('Notify friend request test', (assert) => {
   const io = { to: sinon.stub().returns({ emit: sinon.stub() }) };
   socketToUser.set('12345', 'sneaky');
-  server.notifyFriendRequestHelper(io, 'test', 'sneaky');
+  server.notifyFriendRequest(io, 'test', 'sneaky');
   assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
   assert.ok(io.to().emit.calledWith('friendRequest'), 'io.to().emit should be called with "friendRequest"');
-  server.notifyFriendRequestAcceptedHelper(io, 'sneaky', 'test');
+  server.notifyFriendRequestAccepted(io, 'sneaky', 'test');
   assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
   assert.ok(io.to().emit.calledWith('friendRequestAccepted'), 'io.to().emit should be called with "friendRequestAccepted"');
 });

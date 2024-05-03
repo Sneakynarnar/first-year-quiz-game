@@ -171,6 +171,7 @@ io.on('connection', (socket) => { // socket event listeners
 });
 
 function formatFriends(friends) {
+  if (!friends) return [];
   const formattedFriends = [];
   for (const friend of friends) {
     if (socketToUser.values().includes(friend)) {
