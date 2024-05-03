@@ -25,9 +25,8 @@ export function createRoom(socket, io, username) {
 }
 
 
-export function startQuiz(io, roomId, questions) {
-  // console.log(questions);
-  const questionsList = questions['quiz-one'].questions;
+export function startQuiz(io, roomId, questions, selectedQuizTitle) {
+  const questionsList = questions[selectedQuizTitle].questions;
   let questionIndex = 0;
 
   const sendQuestion = () => {
@@ -36,7 +35,7 @@ export function startQuiz(io, roomId, questions) {
     questionIndex++;
 
     if (questionIndex < questionsList.length) {
-      setTimeout(sendQuestion, 5000); // Adjust the delay as needed
+      setTimeout(sendQuestion, 10000); // Adjust the delay as needed
     }
   };
   sendQuestion(); // Start sending questions

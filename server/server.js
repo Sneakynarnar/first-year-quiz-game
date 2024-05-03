@@ -182,8 +182,8 @@ io.on('connection', (socket) => { // socket event listeners
     rooms.createRoom(socket, io, socketToUser.get(socket.id));
   });
 
-  socket.on('startQuiz', (roomId) => {
-    rooms.startQuiz(io, roomId, questions);
+  socket.on('startQuiz', (roomId, selectedQuizTitle) => {
+    rooms.startQuiz(io, roomId, questions, selectedQuizTitle);
   });
 
   socket.on('getRooms', () => {

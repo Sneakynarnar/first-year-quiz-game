@@ -37,6 +37,9 @@ let currentRoom = '';
 let isHost = false;
 let questionsLoaded = false;
 
+let selectedOption = 'quiz-one';
+
+
 function hideSection(section) {
   section.classList.add('hidden');
 }
@@ -95,7 +98,7 @@ btnRooms.addEventListener('click', () => {
 });
 
 btnStart.addEventListener('click', () => {
-  socket.emit('startQuiz', currentRoom);
+  socket.emit('startQuiz', currentRoom, selectedOption);
   if (isHost && !questionsLoaded) {
     socket.emit('getQuestions');
   }
@@ -130,7 +133,7 @@ socket.on('quizStarted', (questions) => {
 
   setTimeout(() => {
     console.log('Time is up');
-  }, 5000);
+  }, 10000);
 });
 
 socket.on('userJoined', (userId, users) => {
@@ -288,43 +291,40 @@ document.querySelector('#btnRed').addEventListener('click', () => {
 });
 
 function displayFirstQuestion(questions) {
-  const firstQuizQuestions = questions['quiz-one'].questions;
+  // Check if selectedOption is defined before using it
+  if (selectedOption !== undefined && questions[selectedOption]) {
+    const firstQuizQuestions = questions[selectedOption].questions;
 
-  if (isHost) {
-    console.log("I'm a host");
-    const questionTitleElement = document.createElement('h2');
-    questionTitleElement.textContent = firstQuizQuestions[0].question_title;
-    const questionContainer = document.querySelector('#questionContainer');
-    questionContainer.innerHTML = ''; // Clear previous content
-    questionContainer.appendChild(questionTitleElement);
-  }
+    // Use firstQuizQuestions as needed
+    if (isHost) {
+      console.log("I'm a host");
+      const questionTitleElement = document.createElement('h2');
+      questionTitleElement.textContent = firstQuizQuestions[0].question_title;
+      const questionContainer = document.querySelector('#questionContainer');
+      questionContainer.innerHTML = ''; // Clear previous content
+      questionContainer.appendChild(questionTitleElement);
+    }
 
-  if (!isHost) {
-    console.log("I'm a student");
-    const optionsList = firstQuizQuestions[0].options;
-    const optionsListElement = document.createElement('ul');
+    if (!isHost) {
+      console.log("I'm a student");
+      const optionsList = firstQuizQuestions[0].options;
+      const optionsListElement = document.createElement('ul');
 
-
-    console.log(optionsList[0]);
-
-    btnRed.textContent = optionsList[0];
-    btnBlue.textContent = optionsList[1];
-    btnGreen.textContent = optionsList[2];
-    btnYellow.textContent = optionsList[3];
-
-
-    optionsList.forEach((option, index) => {
-      const optionItem = document.createElement('li');
-      optionItem.textContent = option;
-      optionItem.addEventListener('click', () => {
-        socket.emit('answer', { roomId: currentRoom, answer: option });
+      optionsList.forEach((option, index) => {
+        const optionItem = document.createElement('li');
+        optionItem.textContent = option;
+        optionItem.addEventListener('click', () => {
+          socket.emit('answer', { roomId: currentRoom, answer: option });
+        });
+        optionsListElement.appendChild(optionItem);
       });
-      optionsListElement.appendChild(optionItem);
-    });
 
-    const questionContainer = document.querySelector('#questionContainer');
-    questionContainer.innerHTML = '';
-    questionContainer.appendChild(optionsListElement);
+      const questionContainer = document.querySelector('#questionContainer');
+      questionContainer.innerHTML = '';
+      questionContainer.appendChild(optionsListElement);
+    }
+  } else {
+    console.log('Selected option is undefined or does not exist in questions.');
   }
 }
 
@@ -367,13 +367,18 @@ removeFriendButton.addEventListener('click', () => {
 });
 
 
-textBox1.addEventListener('keydown', (event) => {
-  console.log('sending friend request');
-    await sendFriendRequest(textBox1.value);
+textBox1.addEventListener('keydown', async (event) => {
   if (event.key === 'Enter') {
+    console.log('sending friend request');
+    
     const friendName = textBox1.value;
 
-);
+    await sendFriendRequest(friendName);
+
+    textBox1.value = '';
+
+  }
+});
 textBox2.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     const friendName = textBox2.value;
@@ -453,3 +458,40 @@ async function getFriendRequests() {
   });
   return response.json();
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/api/titles');
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch quiz titles');
+    }
+
+    const data = await response.json();
+    const quizTitles = data.quizTitles;
+
+    const quizSelect = document.querySelector('#quizSelect');
+
+    quizSelect.innerHTML = '';
+
+    quizTitles.forEach(quiz => {
+      const option = document.createElement('option');
+      option.value = quiz.quizId;
+      option.textContent = quiz.quizTitle;
+      quizSelect.appendChild(option);
+    });
+
+    console.log('Quiz titles loaded successfully:', quizTitles);
+
+    quizSelect.addEventListener('change', (event) => {
+      selectedOption = event.target.value;
+      console.log('Selected quiz ID:', selectedOption);
+    });
+
+  } catch (error) {
+    console.error('Error fetching quiz titles:', error);
+    alert('Failed to load quiz titles. Please try again later.');
+  }
+});
+
+// socket.emit('selectQuiz', {roomId: currentRoom, quizTitle: selectedTitle });
