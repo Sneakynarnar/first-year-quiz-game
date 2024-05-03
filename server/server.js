@@ -19,7 +19,7 @@ const questions = JSON.parse(
   ),
 );
 dotenv.config(); // Load the environment variables
-const app = express();
+export const app = express();
 const port = process.env.PORT || 3000; // Set the port to the environment variable PORT or 3000
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -30,25 +30,25 @@ const server = http.createServer(app);
 const io = new Server(server);
 export const socketToUser = new Map();
 
-app.get('/api/questions', (req, res) => {
+app.get('/api/questions', async (req, res) => {
   let questions;
   req.query.count = req.query.count || 10;
   if (req.query.category) {
-    questions = quiz.getQuestions(req.query.count, req.query.category);
+    questions = await quiz.getRandomQuestionsFromCategory(req.query.count, req.query.category);
   } else {
-    questions = quiz.getRandomQuestions(req.query.count);
+    questions = await quiz.getRandomQuestions(req.query.count);
   }
-  res.status(200).json(questions);
+  res.status(200).json({ questions });
 });
 
-app.get('/api/allquestions', (req, res) => {
-  quiz.getQuestions().then((questions) => {
+app.get('/api/allquestions', async (req, res) => {
+  await quiz.getQuestions().then((questions) => {
     res.status(200).json(questions);
   });
 });
 
-app.post('/api/createquiz', (req, res) => {
-  const quizCreated = storeQuiz(req.body);
+app.post('/api/createquiz', async (req, res) => {
+  const quizCreated = await storeQuiz(req.body);
   if (quizCreated) {
     res.status(200).json('Quiz created successfully');
   } else {
@@ -57,12 +57,11 @@ app.post('/api/createquiz', (req, res) => {
 });
 
 app.post('/api/sendfriendrequest', async (req, res) => {
-  console.log(req.body);
-  const [from, to] = req.body.fr;
-  console.log('[FRIENDS]: friend request sending from', from, 'to', to);
-  const status = await accounts.sendFriendRequest(res, from, to);
+  const [from, to] = req.body.users;
+  const status = await accounts.sendFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).json('Friend request sent');
+    console.log('Friend request sent from', from, 'to', to, 'on server side');
   } else {
     res.status(400).send(status);
   }
@@ -70,9 +69,10 @@ app.post('/api/sendfriendrequest', async (req, res) => {
 app.post('/api/acceptfriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
-  const status = await accounts.acceptFriendRequest(res, from, to);
+  const status = await accounts.acceptFriendRequest(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend request accepted');
+    console.log('Friend request accepted from', from, 'to', to, 'on server side');
   } else {
     res.status(400).send(status);
   }
@@ -80,12 +80,19 @@ app.post('/api/acceptfriendrequest', async (req, res) => {
 app.post('/api/ignorefriendrequest', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: ignoring friend request from', from, 'to', to, 'on server side');
-  await accounts.ignoreFriendRequest(res, from, to);
+  const status = await accounts.ignoreFriendRequest(from, to);
+  if (status === 'Success') {
+    res.status(200).send('Friend request ignored');
+    console.log('Friend request ignored from', from, 'to', to, 'on server side');
+  } else {
+    console.log('ERROR', status, 'from', from, 'to', to, 'on server side');
+    res.status(400).send(status);
+  }
 });
 app.post('/api/removefriend', async (req, res) => {
   const [from, to] = req.body.users;
   console.log('[FRIENDS]: removing friend from', from, 'to', to, 'on server side');
-  const status = await accounts.removeFriend(res, from, to);
+  const status = await accounts.removeFriend(from, to);
   if (status === 'Success') {
     res.status(200).send('Friend removed');
   } else {
@@ -95,17 +102,27 @@ app.post('/api/removefriend', async (req, res) => {
 app.get('/api/friends/:userId', async (req, res) => {
   const username = req.params.userId;
   console.log('[FRIENDS]: getting friends for', username);
-  const friends = formatFriends(await accounts.getFriends(username));
-  res.status(200).json({ friends });
+  const friends = await accounts.getFriends(username);
+  const formattedFriends = formatFriends(friends);
+  if (!formattedFriends) {
+    res.status(400).send("Couldn't get friends");
+  }
+  res.status(200).json({ formattedFriends });
 });
-app.post('/api/friendrequests', async (req, res) => {
-  const username = req.body;
-  console.log('[FRIENDS]: getting friend requests for', username);
-  await accounts.getFriendRequests(res, username);
+app.get('/api/friendrequests/:userId', async (req, res) => {
+  const username = req.params.userId;
+  // console.log('[FRIENDS]: getting friend requests for', username);
+  const friendRequests = await accounts.getFriendRequests(username);
+  if (friendRequests) {
+    res.status(200).json({ friendRequests });
+  } else {
+    res.status(400).send("Couldn't get friend requests");
+  }
 });
-app.post('/api/leaderboard', async (req, res) => {
+app.get('/api/leaderboard', async (req, res) => {
   console.log('[LEADERBOARD]: getting leaderboard');
-  await accounts.getLeaderboard(res);
+  const leaderboard = await accounts.getLeaderboard();
+  res.send({ leaderboard });
 });
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body; // Destructure the username and password from the request body
@@ -118,9 +135,15 @@ app.post('/api/login', async (req, res) => {
 });
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
-  await accounts.register(res, username, password); // Call the register function from accounts.mjs
+  const status = await accounts.register(username, password); // Call the register function from accounts.mjs
+  if (status === 'Success') {
+    res.status(200).send('Registration successful');
+  } else {
+    console.log('ERROR', status, 'from', username, 'on server side');
+    res.status(400).json(status);
+  }
 });
-app.post('/api/activeusers', async (req, res) => {
+app.get('/api/activeusers', (req, res) => {
   res.json(Array.from(socketToUser.values()));
 });
 server.listen(port, () => {
@@ -176,6 +199,7 @@ io.on('connection', (socket) => { // socket event listeners
 });
 
 function formatFriends(friends) {
+  console.log(friends);
   if (!friends) return [];
   const formattedFriends = [];
   for (const friend of friends) {

@@ -88,7 +88,7 @@ export async function sendFriendRequest(username, requestee) {
   await db.run(
     'INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', [username, requestee],
   );
-  server.notifyFriendRequest(requestee);
+  server.notifyFriendRequest(null, user, requestee);
   return 'Success';
 }
 
@@ -113,7 +113,7 @@ export async function acceptFriendRequest(username, requestee) {
   await db.run(
     'DELETE FROM FriendRequests WHERE (user = ? AND requestee = ?)', [username, requestee],
   );
-  server.notifyFriendRequestAccepted(requestee, username);
+  server.notifyFriendRequestAccepted(null, username, requestee);
   return 'Success';
 }
 

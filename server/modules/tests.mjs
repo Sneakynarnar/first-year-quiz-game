@@ -3,10 +3,13 @@ import * as accounts from './accounts.mjs';
 import * as sockets from './sockets.mjs';
 import * as quizes from './quizes.mjs';
 import * as server from '../server.js';
-import { socketToUser } from '../server.js';
+import { app, socketToUser } from '../server.js';
 import { init } from './setup.mjs';
 import sinon from 'sinon';
+// import http from 'http';
+import request from 'supertest';
 import Filter from 'bad-words';
+
 const filter = new Filter();
 filter.addWords('leagueoflegends');
 
@@ -43,6 +46,7 @@ QUnit.module('Accounts Module', {
 
   QUnit.test('Register test', async (assert) => {
     const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
     const result = await accounts.register('test', 'test');
     assert.equal(result, 'UserAlreadyExists', 'Register should fail if the user already exists');
     const result2 = await accounts.register('QUnit', 'test');
@@ -210,3 +214,171 @@ QUnit.test('Get questions tests', async (assert) => {
 //   assert.equal(sockets.activeRooms.get('123'), 'room should no longer be in activeRooms');
 //   sockets.quitRoom
 // });
+
+QUnit.module('API routes', {
+  beforeEach: async () => {
+    const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
+    await db.run('INSERT INTO Accounts (accountName, accountPassword) VALUES (?, ?)', ['QUnit', 'test']);
+  },
+  afterEach: async () => {
+    const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    await db.run('DELETE FROM FriendRequests WHERE user = ? OR requestee = ?', ['QUnit', 'QUnit']);
+  },
+}, () => {
+  QUnit.test('GET /api/questions', assert => {
+    const done = assert.async();
+    request(app)
+      .get('/api/questions?category=General Knowledge&count=5')
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        assert.ok(Array.isArray(res.body.questions), 'Response body should be an array');
+        done();
+      });
+  });
+
+
+  QUnit.test('GET /api/allquestions', assert => {
+    const done = assert.async();
+    request(app)
+      .get('/api/allquestions')
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        assert.ok(Array.isArray(res.body), 'Response body should be an array');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/sendfriendrequest', assert => {
+    const done = assert.async();
+    request(app)
+      .post('/api/sendfriendrequest')
+      .send({ users: ['test', 'QUnit'] })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        assert.ok(res.body, 'Response body should be truthy');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/acceptfriendrequest', async (assert) => {
+    const done = assert.async();
+    const db = await connect;
+    await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']);
+    request(app)
+      .post('/api/acceptfriendrequest')
+      .send({ users: ['test', 'QUnit'] })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        assert.ok(res.body, 'Response body should be truthy');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/ignorefriendrequest', async (assert) => {
+    const db = await connect;
+    await db.run('INSERT INTO FriendRequests (user, requestee) VALUES (?, ?)', ['test', 'QUnit']); const done = assert.async();
+    request(app)
+      .post('/api/ignorefriendrequest')
+      .send({ users: ['test', 'QUnit'] })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/removefriend', assert => {
+    const done = assert.async();
+    request(app)
+      .post('/api/removefriend')
+      .send({ users: ['test', 'QUnit'] })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('GET /api/friendrequests/:userId', assert => {
+    const done = assert.async();
+    request(app)
+      .get('/api/friendrequests/test')
+      .send({ username: 'test' })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('GET /api/friends/:userId', assert => {
+    const done = assert.async();
+    request(app)
+      .get('/api/friends/test')
+      .send({ username: 'test' })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/createquiz', assert => {
+    const done = assert.async();
+    request(app)
+      .post('/api/createquiz')
+      .send({ 'quiz-title': 'Test Quiz', 'questions': [{ question_title: 'What is the capital of Germany?', options: ['Berlin', 'Paris', 'London', 'Madrid'], correct_ans: 'Berlin' }] })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/register', async (assert) => {
+    const db = await connect;
+    await db.run('DELETE FROM Accounts WHERE accountName = ?', ['QUnit']);
+    const done = assert.async();
+    request(app)
+      .post('/api/register')
+      .send({ username: 'QUnit', password: 'test' })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+
+  QUnit.test('POST /api/login', assert => {
+    const done = assert.async();
+    request(app)
+      .post('/api/login')
+      .send({ username: 'QUnit', password: 'test' })
+      .end((_err, res) => {
+        assert.equal(res.statusCode, 200, 'Status code should be 200');
+        done();
+      });
+  });
+});
+
+QUnit.test('GET /api/leaderboard', assert => {
+  const done = assert.async();
+  request(app)
+    .get('/api/leaderboard')
+    .end((_err, res) => {
+      assert.equal(res.statusCode, 200, 'Status code should be 200');
+      assert.ok(Array.isArray(res.body.leaderboard), 'Response body should be an array');
+      done();
+    });
+});
+QUnit.test('GET /api/activeusers', assert => {
+  const done = assert.async();
+  socketToUser.set('12345', 'sneaky');
+  socketToUser.set('12346', 'tim');
+  socketToUser.set('12347', 'jess');
+  request(app)
+    .get('/api/activeusers')
+    .end((_err, res) => {
+      assert.equal(res.statusCode, 200, 'Status code should be 200');
+      assert.ok(Array.isArray(res.body), 'Response body should be an array');
+      assert.equal(res.body.length, 3, 'Response body should contain 3 users');
+      done();
+    });
+});

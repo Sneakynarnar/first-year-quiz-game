@@ -4,12 +4,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "npm i && npx tailwindcss -i public/src/input.css -o public/src/output.css && node server/modules/setup.mjs && node server/server.js",
+    "start": "npm i && npx tailwindcss -i public/src/input.css -o public/src/output.css && npm test && node server/server.js",
     "dev": "nodemon server/server.js",
     "setup": "npm i && node server/modules/setup.mjs",
     "test": "npm run setup && qunit server/modules/tests.mjs",
     "tw": "npx tailwindcss -i public/src/input.css -o public/src/output.css --watch",
-    "lint": "npx eslint"
+    "lint": "npx eslint",
+    "store": "node server/scripts/store.mjs"
   },
   "author": "",
   "license": "ISC",
@@ -31,6 +32,7 @@
     "eslint-config-portsoc": "^1.0.1",
     "nodemon": "^3.1.0",
     "qunit": "^2.20.1",
+    "supertest": "^7.0.0",
     "tailwindcss": "^3.4.3"
   },
   "eslintConfig": {

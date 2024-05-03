@@ -19,24 +19,24 @@ async function initDataBase() {
     CREATE TABLE Accounts (
       accountName char(25) NOT NULL,
       accountPassword char(25) NOT NULL,  
-      totalQuestionsAnswerd INTEGER DEFAULT 0,
-      totalCorrectAnswers INTEGER DEFAULT 0,
+      totalQuestionsAnswered INTEGER DEFAULT 0,
+      totalCorrectAnswers INTEGER DEFAULT 0 CHECK (totalCorrectAnswers <= totalQuestionsAnswered),
       lastLogin TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (accountName)
     );
   `);
   await db.run(`
-    INSERT INTO Accounts (accountName, accountPassword) VALUES
-    ('sneaky', 'sneaky'),
-    ('ashe', 'ashe'),
-    ('jess', 'jess'),
-    ('lars', 'lars'),
-    ('redjive', 'redjive'),
-    ('nord', 'nord'),
-    ('zod', 'zod'),
-    ('test', 'test'),
-    ('user', 'user');
+    INSERT INTO Accounts (accountName, accountPassword, totalQuestionsAnswered, totalCorrectAnswers) VALUES
+    ('sneaky', 'sneaky', 400, 369),
+    ('ashe', 'ashe', 100, 90),
+    ('jess', 'jess', 200, 180),
+    ('lars', 'lars', 300, 270),
+    ('redjive', 'redjive', 500, 450),
+    ('nord', 'nord', 600, 540),
+    ('zod', 'zod', 700, 630),
+    ('test', 'test', 0, 0),
+    ('user', 'user', 0, 0);
   `);
   await db.run('DROP TABLE IF EXISTS Friends');
   await db.run(`
