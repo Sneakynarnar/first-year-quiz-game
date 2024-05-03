@@ -64,7 +64,7 @@ app.post('/api/sendfriendrequest', (req, res) => {
   if (status === 'Success') {
     res.status(200).json('Friend request sent');
   } else {
-    res.status(400).json(status);
+    res.status(400).send(status);
   }
 });
 app.post('/api/acceptfriendrequest', (req, res) => {
@@ -74,7 +74,7 @@ app.post('/api/acceptfriendrequest', (req, res) => {
   if (status === 'Success') {
     res.status(200).json('Friend request accepted');
   } else {
-    res.status(400).json(status);
+    res.status(400).send(status);
   }
 });
 app.post('/api/ignorefriendrequest', (req, res) => {
