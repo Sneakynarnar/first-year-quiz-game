@@ -68,7 +68,7 @@ app.post('/api/sendfriendrequest', (req, res) => {
   }
 });
 app.post('/api/acceptfriendrequest', (req, res) => {
-  const [from, to] = req.body;
+  const [from, to] = req.body.users;
   console.log('[FRIENDS]: accepting friend request from', from, 'to', to, 'on server side');
   const status = accounts.acceptFriendRequest(res, from, to);
   if (status === 'Success') {
