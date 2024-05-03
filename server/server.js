@@ -30,6 +30,24 @@ const server = http.createServer(app);
 const io = new Server(server);
 export const socketToUser = new Map();
 
+app.get('/api/titles', async (req, res) => {
+  try {
+    const quizTitles = Object.keys(questions);
+
+    const response = {
+      quizTitles: quizTitles.map(title => ({
+        quizId: title,
+        quizTitle: questions[title]['quiz-title']
+      }))
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error fetching quiz titles:', error);
+    res.status(500).json({ error: 'Failed to fetch quiz titles' });
+  }
+});
+
 app.get('/api/questions', async (req, res) => {
   let questions;
   req.query.count = req.query.count || 10;

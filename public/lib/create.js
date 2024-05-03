@@ -37,7 +37,6 @@ let currentRoom = '';
 let isHost = false;
 let questionsLoaded = false;
 
-
 function hideSection(section) {
   section.classList.add('hidden');
 }
@@ -398,3 +397,32 @@ textBox2.addEventListener('keydown', (event) => {
   }
 },
 );
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/api/titles');
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch quiz titles');
+    }
+    
+    const data = await response.json();
+    const quizTitles = data.quizTitles;
+
+    const quizSelect = document.querySelector('#quizSelect');
+
+    quizSelect.innerHTML = '';
+
+    quizTitles.forEach(quiz => {
+      const option = document.createElement('option');
+      option.value = quiz.quizId;
+      option.textContent = quiz.quizTitle; 
+      quizSelect.appendChild(option);
+    });
+
+    console.log('Quiz titles loaded successfully:', quizTitles);
+  } catch (error) {
+    console.error('Error fetching quiz titles:', error);
+    alert('Failed to load quiz titles. Please try again later.');
+  }
+});
