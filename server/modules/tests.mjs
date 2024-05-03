@@ -157,11 +157,12 @@ QUnit.test('Notify friend request test', (assert) => {
   const io = { to: sinon.stub().returns({ emit: sinon.stub() }) };
   socketToUser.set('12345', 'sneaky');
   server.notifyFriendRequest(io, 'test', 'sneaky');
-  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
+  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user to notify the user of the friend request');
   assert.ok(io.to().emit.calledWith('friendRequest'), 'io.to().emit should be called with "friendRequest"');
   server.notifyFriendRequestAccepted(io, 'sneaky', 'test');
-  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user');
+  assert.ok(io.to.calledWith('12345'), 'io.to should be called with the socket ID of the user to notify the user of the friend request acceptance');
   assert.ok(io.to().emit.calledWith('friendRequestAccepted'), 'io.to().emit should be called with "friendRequestAccepted"');
+  socketToUser.clear();
 });
 
 QUnit.module('Quizes Module');

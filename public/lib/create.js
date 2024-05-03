@@ -196,19 +196,15 @@ document.querySelector('#quitRoom').addEventListener('click', () => {
 
 chat.addEventListener('submit', (event) => {
   event.preventDefault();
-
   const messageInput = document.querySelector('#chat textarea');
   const messageContent = messageInput.value.trim();
-
   if (messageContent !== '') {
     sendMessage(messageContent);
     messageInput.value = '';
   }
 });
 console.log(chat, 'Chat');
-
 chat.addEventListener('keydown', (event) => {
-  console.log('Key Pressed', event.key, event.shiftKey, event.key === 'Enter');
   if (event.key === 'Enter' && !event.shiftKey) {
     event.preventDefault();
     const messageInput = document.querySelector('#chat textarea');
@@ -219,7 +215,6 @@ chat.addEventListener('keydown', (event) => {
     }
   }
 });
-
 
 socket.on('questionsList', (questions) => {
   console.log('recieved questions', questions);
@@ -290,7 +285,6 @@ function getCurrentTime() {
   const minutes = String(now.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 }
-
 document.querySelector('#btnRed').addEventListener('click', () => {
   socket.emit('answer', { roomId: currentRoom, answer: 'Red' });
 });
@@ -299,7 +293,6 @@ function displayFirstQuestion(questions) {
   // Check if selectedOption is defined before using it
   if (selectedOption !== undefined && questions[selectedOption]) {
     const firstQuizQuestions = questions[selectedOption].questions;
-
     // Use firstQuizQuestions as needed
     if (isHost) {
       console.log("I'm a host");
@@ -354,7 +347,6 @@ function displayFriends(friendsData) {
 }
 
 
-const friendsData = getFriends();
 addFriendButton.addEventListener('click', () => {
   textBox1.style.display = 'block';
   textBox2.style.display = 'none';
@@ -369,25 +361,14 @@ removeFriendButton.addEventListener('click', () => {
 textBox1.addEventListener('keydown', async (event) => {
   if (event.key === 'Enter') {
     console.log('sending friend request');
-    
     const friendName = textBox1.value;
-
     await sendFriendRequest(friendName);
-
     textBox1.value = '';
-
   }
 });
 textBox2.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    const friendName = textBox2.value;
-    fetch('http://localhost:3000/api/removefriend/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ fr: [accountId, friendName] }),
-    });
+    removeFriend(textBox2.value);
     textBox2.value = '';
   }
 },
@@ -400,7 +381,7 @@ async function sendFriendRequest(username) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ users: [accountId, friendName] }),
+    body: JSON.stringify({ users: [accountId, username] }),
   });
   return response.ok
 }
@@ -411,7 +392,7 @@ async function removeFriend(username) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ users: [accountId, friendName] }),
+    body: JSON.stringify({ users: [accountId, username] }),
   });
   return response.ok
 }
@@ -422,7 +403,7 @@ async function acceptFriendRequest(username) {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ users: [accountId, friendName] }),
+    body: JSON.stringify({ users: [accountId, username] }),
   });
   return response.ok;
 }
