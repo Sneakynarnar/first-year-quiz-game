@@ -207,7 +207,7 @@ io.on('connection', (socket) => { // socket event listeners
   });
 
   socket.on('sendMessage', (roomId, messageContent) => {
-    rooms.sendMessage(socket, roomId, messageContent, io, socketToUser.get(socket.id));
+    rooms.sendMessage(socket, io, roomId, messageContent, socketToUser.get(socket.id));
   });
 
   socket.on('disconnect', () => {
