@@ -66,7 +66,7 @@ socket.on('roomsList', (rooms) => {
 
     const joinButton = document.createElement('button');
     joinButton.textContent = 'Join';
-    joinButton.classList.add('joinRoom');
+    joinButton.classList.add('joinRoom', 'bg-blue-500', 'text-white', 'px-4', 'py-2', 'rounded-lg', 'hover:bg-blue-700', 'text-center'); 
     roomItem.addEventListener('click', (event) => {
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);

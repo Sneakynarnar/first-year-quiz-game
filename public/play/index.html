@@ -6,6 +6,7 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <link rel="icon" href="../media/favicon.svg" sizes="any" type="image/svg+xml" />
+<link rel="stylesheet" href="friend.css">
 
 <body class="bg-gray-100">
     <div class="antialiased bg-gray-100 dark-mode:bg-gray-900">
@@ -42,17 +43,17 @@
 
     <body>
 
+        <!-- Friend section -->
 
-        <!DOCTYPE html>
+        <!-- <!DOCTYPE html>  ** dont know if its still needed **
         <html lang="en">
 
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Friend System</title>
-            <link rel="stylesheet" href="friend.css">
+        </head> -->
 
-        </head>
 
         <body>
 
@@ -67,10 +68,12 @@
 
                 <label for="friendId" style="text-align: center;">Add / Remove Friend</label>
                 <button id="rmfriend"
-                    style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Remove
+                    style="padding: 10px 20px; font-size: 8px; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;"
+                    class=" bg-blue-500 hover:bg-blue-700">Remove
                     Friend</button>
                 <button id="addfriend"
-                    style="padding: 10px 20px; font-size: 8px; background-color: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;">Add
+                    style="padding: 10px 20px; font-size: 8px; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-right: 10px;"
+                    class=" bg-blue-500 hover:bg-blue-700">Add
                     Friend</button>
                 <input type="text" id="textBox1" style="display: none;">
                 <input type="text" id="textBox2" style="display: none;">
@@ -84,7 +87,8 @@
                 </head>
 
                 <body>
-                    <button id="displayMessageBtn" style="font-size: 8px;">Accept</button>
+                    <button id="displayMessageBtn" style="font-size: 8px;"
+                        class=" bg-blue-500 hover:bg-blue-700 text-white">Accept</button>
                     <div id="message">Complete</div>
 
                     <script>
@@ -121,25 +125,30 @@
                     </section>
                 </div>
             </section>
-            <section id="createRoom">
+
+            <!-- Quiz options  -->
+
+            <section id="createRoom"><br>
                 <div class="flex h-full gap-12">
                     <div class="w-1/2 p-8">
                         <div class="text-3xl font-bold text-center mb-8">Quiz Options</div>
-                        <p id="roomText"></p>
-                        <h1>Host a Quiz</h1>
-                        <select id="quizSelect">
+                        <p id="roomText" class="mb-4"></p>
+                        <h1 class="text-lg font-medium mb-2 text-center">Select Quiz Module</h1>
+                        <select id="quizSelect"
+                            class="block w-full border border-gray-300 rounded p-2 py-2 mb-4 text-sm">
                         </select>
-                        <div class="flex gap-4">
-                            <button
-                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-2"
-                                id="startQuiz">Start
+                        <div class="flex flex-col gap-4">
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
+                                id="startQuiz">Start Quiz
                             </button>
-                            <button
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-2"
-                                id="quitRoom">Quit
+                            <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full"
+                                id="quitRoom">Quit Room
                             </button>
                         </div>
                     </div>
+
+                    <!-- User list -->
+
                     <div class="w-1/2 p-8 border-l">
                         <div class="text-3xl font-bold mb-8">User List</div>
                         <ul class="user-list">
@@ -153,13 +162,14 @@
                         <ul id="chatText"></ul>
                         <form id="chat">
                             <label for="chat" class="sr-only">Your message</label>
-                            <div class="flex items-center bg-gray-50 rounded-lg dark:bg-gray-700">
+                            <div
+                                class="flex items-center bg-white rounded-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-600">
                                 <textarea id="chat" rows="1"
-                                    class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white dark:focus:ring-blue-500 dark:bg-transparent dark:focus:ring-blue-500"
                                     placeholder="Your message..."></textarea>
                                 <button type="submit"
-                                    class="inline-flex justify-center p-2 text-blue-500 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
-                                    <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="0 0 20 20"
+                                    class="inline-flex justify-center p-2 text-blue-500 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <svg class="w-6 h-6 rotate-90" fill="currentColor" viewBox="00 00 20 25"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
                                             d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
@@ -167,47 +177,48 @@
                                     </svg>
                                 </button>
                             </div>
-                        </form>
+
                     </div>
+                    </form>
                 </div>
+        </div>
 
 
-            </section>
-            <section id="roomJoin">
-            </section>
+        </section>
+
+        <section id="roomJoin">
+        </section>
         </div>
 
         <!-- Question display area -->
         <section id="questionContainer" class="text-center mt-8 p-4">
-
 
         </section>
 
 
         <!-- options -->
         <section id="playArea">
-            <div class="grid grid-cols-2 gap-4 ">
-                <div class="bg-red-500 p-4 rounded-lg">
-                    <button
-                        class="bg-white text-red-500 font-bold py-2 px-8 w-full hover:bg-red-700 hover:text-white transition duration-300"
-                        id="btnRed">Answer</button>
+
+            <div class="grid grid-cols-2 gap-3 px-4 pb-4" >
+
+                <div class="bg-red-500 p-4 rounded-lg hover:bg-red-700">
+                    <button class="text-white font-bold py-2 px-8 w-full" id="btnRed">Answer</button>
                 </div>
-                <div class="bg-blue-500 p-4 rounded-lg">
-                    <button
-                        class="bg-white text-blue-500 font-bold py-2 px-8 w-full hover:bg-blue-700 hover:text-white transition duration-300"
-                        id="btnBlue">Answer</button>
+
+                <div class="bg-blue-500 p-4 rounded-lg hover:bg-blue-700">
+                    <button class="text-white font-bold py-2 px-8 w-full" id="btnBlue">Answer</button>
                 </div>
-                <div class="bg-green-500 p-4 rounded-lg">
-                    <button
-                        class="bg-white text-green-500 font-bold py-2 px-8 w-full hover:bg-green-700 hover:text-white transition duration-300"
-                        id="btnGreen">Answer</button>
+
+                <div class="bg-green-500 p-4 rounded-lg hover:bg-green-700">
+                    <button class="text-white font-bold py-2 px-8 w-full" id="btnGreen">Answer</button>
                 </div>
-                <div class="bg-yellow-500 p-4 rounded-lg">
-                    <button
-                        class="bg-white text-yellow-500 font-bold py-2 px-8 w-full hover:bg-yellow-700 hover:text-white transition duration-300"
-                        id="btnYellow">Answer</button>
+
+                <div class="bg-yellow-500 p-4 rounded-lg hover:bg-yellow-700">
+                    <button class="text-white font-bold py-2 px-8 w-full" id="btnYellow">Answer</button>
                 </div>
+
             </div>
+
 
         </section>
 
