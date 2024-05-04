@@ -194,6 +194,7 @@ document.querySelector('#quitRoom').addEventListener('click', () => {
   console.log('Quit Roomed');
 });
 
+
 chat.addEventListener('submit', (event) => {
   event.preventDefault();
   const messageInput = document.querySelector('#chat textarea');
@@ -229,7 +230,7 @@ socket.on('question', (question) => {
 function displayQuestion(question) {
   const questionContainer = document.querySelector('#questionContainer');
   questionContainer.innerHTML = `<h2>${question.question_title}</h2>`;
-  const optionsListElement = document.createElement('ul');
+  // const optionsListElement = document.createElement('ul');
   btnRed.textContent = question.options[0];
   btnBlue.textContent = question.options[1];
   btnGreen.textContent = question.options[2];
@@ -474,3 +475,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // socket.emit('selectQuiz', {roomId: currentRoom, quizTitle: selectedTitle });
+
+
+
