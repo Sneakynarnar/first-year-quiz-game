@@ -39,6 +39,8 @@ let questionsLoaded = false;
 
 let selectedOption = 'quiz-one';
 
+let currentQuestion;
+
 
 function hideSection(section) {
   section.classList.add('hidden');
@@ -66,7 +68,7 @@ socket.on('roomsList', (rooms) => {
 
     const joinButton = document.createElement('button');
     joinButton.textContent = 'Join';
-    joinButton.classList.add('joinRoom', 'bg-blue-500', 'text-white', 'px-4', 'py-2', 'rounded-lg', 'hover:bg-blue-700', 'text-center'); 
+    joinButton.classList.add('joinRoom', 'bg-blue-500', 'text-white', 'px-4', 'py-2', 'rounded-lg', 'hover:bg-blue-700', 'text-center');
     roomItem.addEventListener('click', (event) => {
       if (event.target.classList.contains('joinRoom')) {
         socket.emit('joinRoom', roomId);
@@ -224,6 +226,10 @@ socket.on('questionsList', (questions) => {
 });
 
 socket.on('question', (question) => {
+  console.log(question);
+
+  currentQuestion = question;
+
   displayQuestion(question);
 });
 
@@ -286,9 +292,60 @@ function getCurrentTime() {
   const minutes = String(now.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 }
-document.querySelector('#btnRed').addEventListener('click', () => {
-  socket.emit('answer', { roomId: currentRoom, answer: 'Red' });
+btnRed.addEventListener('click', (e) => {
+  let bool = false;
+
+  if (currentQuestion.correct_ans === 0) {
+    console.log('Correct');
+    bool = true;
+  } else {
+    console.log('Incorrect');
+  }
+
+  socket.emit('answer', { roomId: currentRoom, answer: e.target.textContent, correct: bool });
 });
+
+btnBlue.addEventListener('click', (e) => {
+  let bool = false;
+
+  if (currentQuestion.correct_ans === 1) {
+    console.log('Correct');
+    bool = true;
+  } else {
+    console.log('Incorrect');
+  }
+
+
+  socket.emit('answer', { roomId: currentRoom, answer: e.target.textContent, correct: bool });
+});
+
+btnYellow.addEventListener('click', (e) => {
+  let bool = false;
+
+  if (currentQuestion.correct_ans === 2) {
+    console.log('Correct');
+    bool = true;
+  } else {
+    console.log('Incorrect');
+  }
+
+
+  socket.emit('answer', { roomId: currentRoom, answer: e.target.textContent, correct: bool });
+});
+
+btnGreen.addEventListener('click', (e) => {
+  let bool = false;
+
+  if (currentQuestion.correct_ans === 3) {
+    console.log('Correct');
+    bool = true;
+  } else {
+    console.log('Incorrect');
+  }
+
+  socket.emit('answer', { roomId: currentRoom, answer: e.target.textContent, correct: bool });
+});
+
 
 function displayFirstQuestion(questions) {
   // Check if selectedOption is defined before using it
